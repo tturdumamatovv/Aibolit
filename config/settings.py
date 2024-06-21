@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
+import datetime
 from pathlib import Path
 from decouple import config
 
@@ -37,10 +38,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Installed
-
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'drf_spectacular',
     # Created
+    'apps.authentication'
 
 ]
+
+AUTH_USER_MODEL = "authentication.User"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -101,16 +107,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.authentication.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.authentication.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.authentication.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.authentication.password_validation.NumericPasswordValidator',
     },
 ]
 
@@ -152,3 +158,38 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    # Другие настройки REST framework...
+}
+
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=7),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=7)
+}
+
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Aibolit OpenAPI",
+    "DESCRIPTION": "Описание нашего API в разработке...",
+    'COMPONENT_SPLIT_REQUEST': True,
+    "VERSION": "1.0.0",
+    "SCHEMA_PATH_PREFIX": r"/api/v[0-9]",
+    "SERVE_PERMISSIONS": ("rest_framework.permissions.IsAdminUser", ),
+    "SERVE_AUTHENTICATION": ('rest_framework.authentication.SessionAuthentication',
+                             'rest_framework.authentication.BasicAuthentication'),
+    "PREPROCESSING_HOOKS": ("apps.openapi.preprocessors.get_urls_preprocessor",),
+    "SWAGGER_UI_SETTINGS": {
+        "docExpansion": "list",  # 'none' | 'list' | 'full'
+    },
+    "GENERATE_UNIQUE_PARAMETER_NAMES": True,
+
+    # "ENUM_NAME_OVERRIDES": {
+    #     "RatingsEnum": "apps.autoanswers.models.RatingChoices",
+    #     "CountMonthsEnum": "api.billing.serializers.PeriodChoices",
+    # },
+    "SERVE_PERMISSIONS": ("rest_framework.permissions.AllowAny",)
+}
+
