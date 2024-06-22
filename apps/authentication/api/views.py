@@ -1,13 +1,9 @@
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.views import APIView
 
-from django.http import JsonResponse
 from django.contrib.auth.models import User
-from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from asgiref.sync import async_to_sync
 
 from firebase_admin import auth as firebase_auth
 import firebase_admin
@@ -23,12 +19,12 @@ from .serializers import (
     UserProfileSerializer,
     UserAddressSerializer,
     UserAddressUpdateSerializer,
-    NotificationSerializer
+    NotificationSerializer,
+    UserRetireeSerializer
 )
 from apps.authentication.utils import (
     send_sms,
     generate_confirmation_code,
-    # send_telegram_message
 )
 
 
@@ -50,8 +46,6 @@ class UserLoginView(generics.CreateAPIView):
         confirmation_code = generate_confirmation_code()
         send_sms(phone_number, confirmation_code)
 
-        # chat_id = 1105812455
-        # async_to_sync(send_telegram_message)(chat_id, confirmation_code)
 
         User.objects.update_or_create(
             phone_number=phone_number,
@@ -99,10 +93,28 @@ class VerifyCodeView(generics.CreateAPIView):
         }, status=status.HTTP_200_OK)
 
 
+class UpdateUserRetireeStatusAPIView(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserRetireeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        is_retiree = request.data.get('is_retiree', instance.is_retiree)
+
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(is_retiree=is_retiree)
+
+        return Response(serializer.data)
+
+
 class UserProfileUpdateView(generics.RetrieveUpdateAPIView):
     serializer_class = UserProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
-    # parser_classes = [MultiPartParser, FormParser]
 
     def get_object(self):
         return self.request.user
@@ -111,7 +123,7 @@ class UserProfileUpdateView(generics.RetrieveUpdateAPIView):
         instance = self.get_object()
         profile_picture = request.data.get('profile_picture')
 
-        # Если пользователь не загрузил фотографию, устанавливаем дефолтную
+        # If user did not upload profile picture, set default
         if not profile_picture and not instance.profile_picture:
             instance.profile_picture = settings.DEFAULT_PROFILE_PICTURE_URL
 
@@ -119,6 +131,7 @@ class UserProfileUpdateView(generics.RetrieveUpdateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
+        # Update first_visit status if necessary
         if all(serializer.validated_data.get(field) for field in ['full_name', 'date_of_birth', 'email']):
             instance.first_visit = False
             instance.save()
@@ -171,35 +184,6 @@ class UserAddressDeleteAPIView(generics.RetrieveDestroyAPIView):
     def get_queryset(self):
         user = self.request.user
         return UserAddress.objects.filter(user=user)
-
-
-@csrf_exempt
-def google_login(request):
-    if request.method == 'POST':
-        # Получаем токен от фронтенда
-        token = request.POST.get('id_token')
-        if not token:
-            return JsonResponse({'status': 'error', 'message': 'ID token is required.'}, status=400)
-
-        # Верификация токена с помощью Firebase
-        try:
-            decoded_token = firebase_auth.verify_id_token(token)
-            uid = decoded_token['uid']
-            email = decoded_token.get('email')
-
-            # Найдите или создайте пользователя в вашей базе данных
-            user, created = User.objects.get_or_create(email=email, defaults={'username': uid})
-
-            # Здесь можно создать JWT токен или установить сессию для пользователя
-
-            # Пример: Возврат успешного ответа
-            return JsonResponse({'status': 'success', 'user_id': user.id})
-
-        except Exception as e:
-            # Обработка ошибок верификации
-            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
-    else:
-        return JsonResponse({'status': 'error', 'message': 'Only POST requests are allowed'}, status=405)
 
 
 class UserDeleteAPIView(generics.DestroyAPIView):

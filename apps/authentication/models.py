@@ -27,13 +27,19 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone_number = models.CharField(max_length=13, unique=True, verbose_name=_('Номер телефона'))
     code = models.CharField(max_length=4, blank=True, null=True, verbose_name=_('Код'))
     is_staff = models.BooleanField(default=False, verbose_name=_('Работник'))
-    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True, max_length=255, verbose_name=_('Изображение профиля'))
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True, max_length=255,
+                                        verbose_name=_('Изображение профиля'))
     full_name = models.CharField(max_length=255, blank=True, verbose_name=_('Полное имя'))
     date_of_birth = models.DateField(blank=True, null=True, verbose_name=_('Дата рождения'))
     email = models.EmailField(blank=True, verbose_name=_('Имейл'))
     first_visit = models.BooleanField(default=True, verbose_name=_('Дата первого визита'))
     fcm_token = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('Токен'))
     receive_notifications = models.BooleanField(default=False, verbose_name=_('Получать уведомления'), null=True, blank=True)
+    is_retiree = models.BooleanField(default=False, verbose_name=_('Пенсионер'))
+    retiree_card_front = models.ImageField(upload_to='retiree_cards/', blank=True, null=True,
+                                           verbose_name=_('Лицевая сторона карточки пенсионера'))
+    retiree_card_back = models.ImageField(upload_to='retiree_cards/', blank=True, null=True,
+                                          verbose_name=_('Оборотная сторона карточки пенсионера'))
 
     objects = CustomUserManager()
 
@@ -50,12 +56,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class UserAddress(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses', verbose_name=_("Пользователь"))
-    city = models.CharField(max_length=100, verbose_name=_("Город"))
-    street = models.CharField(max_length=100, verbose_name=_("Улица"))
-    apartment_number = models.CharField(max_length=10, verbose_name=_("Номер квартиры"), null=True, blank=True)
-    entrance = models.CharField(max_length=10, verbose_name=_("Подъезд"), null=True, blank=True)
-    floor = models.CharField(max_length=10, verbose_name=_("Этаж"), null=True, blank=True)
-    intercom = models.CharField(max_length=10, verbose_name=_("Домофон"), null=True, blank=True)
+    address = models.CharField(max_length=255, verbose_name=_("Адрес"))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Дата создания"))
     is_primary = models.BooleanField(default=False, verbose_name=_("Главный"))
 
@@ -65,4 +66,4 @@ class UserAddress(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f'{self.city} - {self.street} - {self.apartment_number} - {self.entrance} - {self.floor} - {self.intercom}'
+        return f'{self.address}'

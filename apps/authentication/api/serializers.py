@@ -18,16 +18,26 @@ class VerifyCodeSerializer(serializers.Serializer):
     receive_notifications = serializers.BooleanField(required=False, allow_null=True)
 
 
+class UserRetireeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['is_retiree']
+
+
+
 class UserProfileSerializer(serializers.ModelSerializer):
     phone_number = serializers.CharField(read_only=True)
     profile_picture = serializers.ImageField(required=False, allow_null=True)
     has_profile_picture = serializers.SerializerMethodField()
+    retiree_card_front = serializers.ImageField(required=False, allow_null=True)
+    retiree_card_back = serializers.ImageField(required=False, allow_null=True)
 
     class Meta:
         model = User
         fields = ('id', 'phone_number', 'profile_picture', 'full_name', 'date_of_birth',
-                  'email', 'first_visit', 'has_profile_picture', 'receive_notifications')
-        read_only = ('receive_notifications',)
+                  'email', 'first_visit', 'has_profile_picture', 'is_retiree',
+                  'retiree_card_front', 'retiree_card_back')
+        read_only_fields = ('is_retiree',)
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
@@ -46,8 +56,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class UserAddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAddress
-        fields = ['id', 'user', 'city', 'street', 'apartment_number', 'entrance',
-                  'floor', 'intercom', 'created_at', 'is_primary']  # Include 'is_primary'
+        fields = ['id', 'user', 'address']  # Include 'is_primary'
         read_only_fields = ['user', 'created_at']
 
 
@@ -58,13 +67,12 @@ class UserAddressDetailSerializer(serializers.ModelSerializer):
 
 
 class UserAddressUpdateSerializer(serializers.ModelSerializer):
-    city = serializers.CharField(required=False)
+    address = serializers.CharField(required=False)
     is_primary = serializers.BooleanField(required=False)  # Include 'is_primary' as an optional field
 
     class Meta:
         model = UserAddress
-        fields = ['id', 'user', 'city', 'street', 'apartment_number', 'entrance',
-                  'floor', 'intercom', 'created_at', 'is_primary']  # Include 'is_primary'
+        fields = ['id', 'user', 'address', 'is_primary']  # Include 'is_primary'
         read_only_fields = ['user', 'created_at']
 
 
