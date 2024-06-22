@@ -38,7 +38,7 @@ admin.site.register(User, UserAdmin)
 
 @admin.register(UserAddress)
 class UserAddressAdmin(admin.ModelAdmin):
-    list_display = ('user', 'city', 'street', 'apartment_number', 'is_primary')
-    list_filter = ('city', 'is_primary')
-    search_fields = ('city', 'street', 'user__username', 'user__email')
+    list_display = ('user', 'address')
+    list_filter = ('is_primary',)
+    search_fields = ('address', 'user__username', 'user__email')
     ordering = ('-created_at',)
