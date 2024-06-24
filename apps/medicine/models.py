@@ -39,6 +39,8 @@ class Product(models.Model):
                                            verbose_name=_("Скидка, %"))
     discounted_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True,
                                            verbose_name=_("Цена со скидкой"))
+    related_products = models.ManyToManyField('self', blank=True, verbose_name=_("Другие варианты этого продукта"))
+    similar_products = models.ManyToManyField('self', blank=True, verbose_name=_("Похожие продукты"))
 
     def __str__(self):
         return self.name

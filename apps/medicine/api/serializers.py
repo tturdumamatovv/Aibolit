@@ -36,14 +36,12 @@ class ProductSerializer(serializers.ModelSerializer):
         else:
             representation['image'] = None
 
-        # Remove images field as we already handled it
         representation.pop('images', None)
 
-        # Only include discounted_price if it exists
         if instance.discounted_price is None:
             representation.pop('discounted_price', None)
 
-        if instance.discount_percent is None or "0.00":
+        if instance.discount_percent is None or instance.discount_percent == 0.00:
             representation.pop('discount_percent', None)
 
         return representation
@@ -52,13 +50,15 @@ class ProductSerializer(serializers.ModelSerializer):
 class ProductDetailSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     images = ProductImageSerializer(many=True, read_only=True)
+    related_products = serializers.SerializerMethodField()
+    similar_products = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = ('id', 'name', 'description', 'discount_percent', 'discounted_price', 'price',
                   'storage_rules', 'manufacturer', 'country', 'expiration_date', 'dosage',
                   'category', 'dosage_form', 'packaging', 'composition', 'contraindications',
-                  'indications', 'side_effects', 'images')
+                  'indications', 'side_effects', 'images', 'related_products', 'similar_products')
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -68,14 +68,32 @@ class ProductDetailSerializer(serializers.ModelSerializer):
             main_image = instance.images.first()
 
         # Add all image URLs
-        representation['images'] = [self.context['request'].build_absolute_uri(f"{settings.MEDIA_URL}{img.image}") for img in instance.images.all()]
+        representation['images'] = [
+            {
+                'image': self.context['request'].build_absolute_uri(f"{settings.MEDIA_URL}{img.image}"),
+                'main': img.main  # Include 'main' field
+            }
+            for img in instance.images.all()
+        ]
 
         # Only include discounted_price if it exists
         if instance.discounted_price is None:
             representation.pop('discounted_price', None)
 
-        # Only include discount_percent if it exists
-        if instance.discount_percent is None or "0.00":
+        # Only include discount_percent if it exists and not "0.00"
+        if instance.discount_percent is None or instance.discount_percent == 0.00:
             representation.pop('discount_percent', None)
 
         return representation
+
+    def get_related_products(self, instance):
+        # Serialize related products
+        related_products = instance.related_products.all()
+        serializer = ProductSerializer(related_products, many=True, context=self.context)
+        return serializer.data
+
+    def get_similar_products(self, instance):
+        # Serialize related products
+        related_products = instance.related_products.all()
+        serializer = ProductSerializer(related_products, many=True, context=self.context)
+        return serializer.data
