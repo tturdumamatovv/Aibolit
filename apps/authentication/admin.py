@@ -17,7 +17,8 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('is_staff', 'is_superuser',)
     fieldsets = (
         (None, {'fields': ('phone_number', 'password', 'profile_picture')}),
-        ('Personal info', {'fields': ('name', 'full_name', 'date_of_birth', 'email')}),
+        ('Личная информация', {'fields': ('name', 'full_name', 'date_of_birth', 'email',
+                                          'is_retiree', 'retiree_card_front', 'retiree_card_back')}),
 
     )
     add_fieldsets = (

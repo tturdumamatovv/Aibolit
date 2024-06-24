@@ -31,6 +31,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(' ')
 # Application definition
 
 INSTALLED_APPS = [
+    'simpleui',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,7 +43,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'drf_spectacular',
     # Created
-    'apps.authentication'
+    'apps.authentication',
+    'apps.medicine'
 
 ]
 
@@ -107,16 +109,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.authentication.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.authentication.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.authentication.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.authentication.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
 
@@ -140,8 +142,8 @@ LANGUAGES = (
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
 MEDIA_URL = '/media/'
@@ -197,3 +199,113 @@ SPECTACULAR_SETTINGS = {
     "SERVE_PERMISSIONS": ("rest_framework.permissions.AllowAny",)
 }
 
+
+SIMPLEUI_HOME_INFO = False
+SIMPLEUI_HOME_ACTION = False
+SIMPLEUI_HOME_QUICK = False
+SIMPLEUI_DEFAULT_THEME = 'simpleui.css'
+SIMPLEUI_INDEX = '#'
+SIMPLEUI_LOGO = '/static/icons/LOGO.png'
+SIMPLEUI_CONFIG = {
+    'system_keep': False,
+    'menus': [
+        {
+
+            'name': 'Пользователи и адреса',
+            'icon': 'fa fa-book',
+            'models': [
+                {
+                    'name': 'Пользователь',
+                    'icon': 'fa fa-user',
+                    'url': '/admin/authentication/user/'
+                },
+                {
+                    'name': 'Адреса пользователей',
+                    'icon': 'fa fa-home',
+                    'url': '/admin/authentication/useraddress/'
+                },
+            ]
+        },
+        # {
+        #
+        #     'name': 'Страницы',
+        #     'icon': 'fa fa-book',
+        #     'models': [
+        #         {
+        #             'name': 'О нас',
+        #             'icon': 'fa fa-info-circle',
+        #             'models': [
+        #                 {
+        #                     'name': 'Страница О нас',
+        #                     'icon': 'fa fa-file-text',
+        #                     'url': '/admin/about_us/aboutpage/'
+        #                 },
+        #                 {
+        #                     'name': 'Блоки',
+        #                     'icon': 'fa fa-cubes',
+        #                     'url': '/admin/about_us/contentblock/'
+        #                 },
+        #
+        #             ]
+        #         },
+        #         {
+        #             'name': 'Портфолио',
+        #             'icon': 'fa fa-folder',
+        #             'models': [
+        #                 {
+        #                     'name': 'Страница Портфолио',
+        #                     'icon': 'fa fa-file-text',
+        #                     'url': '/admin/portfolio/portfoliopage/'
+        #                 },
+        #                 {
+        #                     'name': 'Направление',
+        #                     'icon': 'fa fa-arrows',
+        #                     'url': '/admin/portfolio/portfolioduration/'
+        #                 },
+        #                 {
+        #                     'name': 'Проекты',
+        #                     'icon': 'fa fa-industry',
+        #                     'url': '/admin/portfolio/portfolioproject/'
+        #                 },
+        #             ]
+        #         },
+        #         {
+        #             'name': 'Услуги',
+        #             'icon': 'fa fa-user',
+        #             'models': [
+        #                 {
+        #                     'name': 'Страница Услуг',
+        #                     'icon': 'fa fa-file-text',
+        #                     'url': '/admin/services/servicepage/'
+        #                 },
+        #                 {
+        #                     'name': 'Услуги',
+        #                     'icon': 'fa fa-cube',
+        #                     'url': '/admin/services/service/'
+        #                 },
+        #                 {
+        #                     'name': 'Блоки сервисов',
+        #                     'icon': 'fa fa-cubes',
+        #                     'url': '/admin/services/contentblock/'
+        #                 },
+        #
+        #             ]
+        #         },
+        #         {
+        #             'name': 'Контакты',
+        #             'icon': 'fa fa-address-book',
+        #             'url': '/admin/contacts/contact/'
+        #         },
+        #
+        #
+        #
+        #     ]
+        # },
+        # {
+        #     'name': 'Заявки',
+        #     'icon': 'fa fa-list',
+        #     'url': '/admin/contacts/application/'
+        # },
+
+    ]
+}
