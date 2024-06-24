@@ -166,6 +166,8 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',  # AutoSchema для drf-spectacular
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
 }
 
 
@@ -188,7 +190,7 @@ SPECTACULAR_SETTINGS = {
                              'rest_framework.authentication.BasicAuthentication'),
     "PREPROCESSING_HOOKS": ("apps.openapi.preprocessors.get_urls_preprocessor",),
     "SWAGGER_UI_SETTINGS": {
-        "docExpansion": "list",  # 'none' | 'list' | 'full'
+        "docExpansion": "none",  # 'none' | 'list' | 'full'
     },
     "GENERATE_UNIQUE_PARAMETER_NAMES": True,
 
@@ -202,7 +204,7 @@ SPECTACULAR_SETTINGS = {
 
 SIMPLEUI_HOME_INFO = False
 SIMPLEUI_HOME_ACTION = False
-SIMPLEUI_HOME_QUICK = False
+SIMPLEUI_HOME_QUICK = True
 SIMPLEUI_DEFAULT_THEME = 'simpleui.css'
 SIMPLEUI_INDEX = '#'
 SIMPLEUI_LOGO = '/static/icons/LOGO.png'
@@ -210,7 +212,6 @@ SIMPLEUI_CONFIG = {
     'system_keep': False,
     'menus': [
         {
-
             'name': 'Пользователи и адреса',
             'icon': 'fa fa-book',
             'models': [
@@ -223,6 +224,22 @@ SIMPLEUI_CONFIG = {
                     'name': 'Адреса пользователей',
                     'icon': 'fa fa-home',
                     'url': '/admin/authentication/useraddress/'
+                },
+            ]
+        },
+        {
+            'name': 'Продукты и категории',
+            'icon': 'fa fa-product',
+            'models': [
+                {
+                    'name': 'Продукты',
+                    'icon': 'fa fa-product',
+                    'url': '/admin/medicine/product/'
+                },
+                {
+                    'name': 'Категории',
+                    'icon': 'fa fa-category',
+                    'url': '/admin/medicine/category/'
                 },
             ]
         },
