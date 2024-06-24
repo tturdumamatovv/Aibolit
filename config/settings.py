@@ -229,16 +229,16 @@ SIMPLEUI_CONFIG = {
         },
         {
             'name': 'Продукты и категории',
-            'icon': 'fa fa-product',
+            'icon': 'fa fa-book',
             'models': [
                 {
                     'name': 'Продукты',
-                    'icon': 'fa fa-product',
+                    'icon': 'fa fa-notes-medical',
                     'url': '/admin/medicine/product/'
                 },
                 {
                     'name': 'Категории',
-                    'icon': 'fa fa-category',
+                    'icon': 'fa fa-list-alt ',
                     'url': '/admin/medicine/category/'
                 },
             ]
