@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from apps.authentication.models import User
+
 
 class Category(models.Model):
     code = models.IntegerField(unique=True, verbose_name=_("Код"))
@@ -136,3 +138,17 @@ class DosageForm(models.Model):
     class Meta:
         verbose_name = _("Форма выпуска")
         verbose_name_plural = _("Формы выпуска")
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorites', verbose_name=_("Пользлватель"))
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='favorites', verbose_name=_("Продукт"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Дата добавления"))
+
+    class Meta:
+        unique_together = ('user', 'product')
+        verbose_name = _("Избранное")
+        verbose_name_plural = _("Избранные товары")
+
+    def __str__(self):
+        return f"{self.user} - {self.product.name}"

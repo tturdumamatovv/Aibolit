@@ -35,13 +35,13 @@ class UserLoginView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         phone_number = request.data.get('phone_number')
         if not phone_number:
-            return Response({'error': 'Phone number is required.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Требуется указать номер телефона.'}, status=status.HTTP_400_BAD_REQUEST)
         if not phone_number.startswith("+996"):
-            return Response({'error': 'Phone number must start with "+996".'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Номер телефона должен начинаться с "+996".'}, status=status.HTTP_400_BAD_REQUEST)
         elif len(phone_number) != 13:
-            return Response({'error': 'Phone number must be 13 digits long including the country code.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Номер телефона должен состоять из 13 цифр, включая код страны.'}, status=status.HTTP_400_BAD_REQUEST)
         elif not phone_number[4:].isdigit():
-            return Response({'error': 'Invalid characters in phone number. Only digits are allowed after the country code.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Недопустимые символы в номере телефона. После кода страны допускаются только цифры.'}, status=status.HTTP_400_BAD_REQUEST)
 
         confirmation_code = generate_confirmation_code()
         send_sms(phone_number, confirmation_code)
@@ -53,7 +53,7 @@ class UserLoginView(generics.CreateAPIView):
         )
 
         response_data = {
-            'message': 'Confirmation code sent successfully.',
+            'message': 'Код подтверждения успешно отправлен.',
             'code': confirmation_code
         }
         return Response(response_data, status=status.HTTP_200_OK)
@@ -71,7 +71,7 @@ class VerifyCodeView(generics.CreateAPIView):
 
         user = User.objects.filter(code=code).first()
         if not user:
-            return Response({'error': 'Invalid code.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Неверный код подтверждения.'}, status=status.HTTP_400_BAD_REQUEST)
 
         user.is_verified = True
         user.code = None
@@ -109,7 +109,7 @@ class UpdateUserRetireeStatusAPIView(generics.UpdateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save(is_retiree=is_retiree)
 
-        return Response(serializer.data)
+        return Response({'message': 'Статус пенсионера успешно обновлен.'})
 
 
 class UserProfileUpdateView(generics.RetrieveUpdateAPIView):
@@ -136,7 +136,7 @@ class UserProfileUpdateView(generics.RetrieveUpdateAPIView):
             instance.first_visit = False
             instance.save()
 
-        return Response(serializer.data)
+        return Response({'message': 'Профиль пользователя успешно обновлен.'})
 
     def get(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -155,8 +155,8 @@ class UserAddressCreateAPIView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         user = self.request.user
-
         serializer.save(user=user)
+        return Response({'message': 'Адрес успешно создан.'})
 
 
 class UserAddressUpdateAPIView(generics.RetrieveUpdateAPIView):
@@ -166,14 +166,10 @@ class UserAddressUpdateAPIView(generics.RetrieveUpdateAPIView):
 
     def perform_update(self, serializer):
         user = self.request.user
-
-        # Check if 'is_primary' is set to True
         if serializer.validated_data.get('is_primary', False):
-            # Set 'is_primary' of all other addresses to False for this user
             UserAddress.objects.filter(user=user, is_primary=True).update(is_primary=False)
-
-        # Perform the update
         serializer.save()
+        return Response({'message': 'Адрес успешно обновлен.'})
 
 
 class UserAddressDeleteAPIView(generics.RetrieveDestroyAPIView):
@@ -185,6 +181,11 @@ class UserAddressDeleteAPIView(generics.RetrieveDestroyAPIView):
         user = self.request.user
         return UserAddress.objects.filter(user=user)
 
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.delete()
+        return Response({'message': 'Адрес успешно удален.'}, status=status.HTTP_204_NO_CONTENT)
+
 
 class UserDeleteAPIView(generics.DestroyAPIView):
     queryset = User.objects.all()
@@ -194,7 +195,7 @@ class UserDeleteAPIView(generics.DestroyAPIView):
         user = self.request.user
         user.delete()  # Удаляем пользователя
 
-        return Response({'message': 'User deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        return Response({'message': 'Пользователь удален успешно.'}, status=status.HTTP_204_NO_CONTENT)
 
 
 class NotificationSettingsAPIView(generics.RetrieveUpdateAPIView):
@@ -217,4 +218,4 @@ class NotificationSettingsAPIView(generics.RetrieveUpdateAPIView):
             user.save()
 
         serializer = self.get_serializer(user)
-        return Response(serializer.data)
+        return Response(serializer.data, {'message': 'Настройки уведомлений успешно обновлены.'})

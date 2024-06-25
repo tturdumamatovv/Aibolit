@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'drf_spectacular',
     # Created
     'apps.authentication',
-    'apps.medicine'
+    'apps.medicine',
+    'apps.order',
 
 ]
 
@@ -238,8 +239,24 @@ SIMPLEUI_CONFIG = {
                 },
                 {
                     'name': 'Категории',
-                    'icon': 'fa fa-list-alt ',
+                    'icon': 'fa fa-list-alt',
                     'url': '/admin/medicine/category/'
+                },
+            ]
+        },
+        {
+            'name': 'Заказы',
+            'icon': 'fa fa-book',
+            'models': [
+                {
+                    'name': 'Заказы',
+                    'icon': 'fa fa-shopping-cart',
+                    'url': '/admin/order/order/'
+                },
+                {
+                    'name': 'Элементы заказа',
+                    'icon': 'fa fa-shopping-basket',
+                    'url': '/admin/order/orderitem/'
                 },
             ]
         },

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.medicine.models import Product, Category, ProductImage
+from apps.medicine.models import Product, Category, ProductImage, Favorite
 
 from django.conf import settings
 
@@ -97,3 +97,18 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         related_products = instance.related_products.all()
         serializer = ProductSerializer(related_products, many=True, context=self.context)
         return serializer.data
+
+
+class FavoriteSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+    product_id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), write_only=True)
+
+    class Meta:
+        model = Favorite
+        fields = ['id', 'product', 'product_id', 'created_at']
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        product = validated_data['product_id']
+        favorite, created = Favorite.objects.get_or_create(user=user, product=product)
+        return favorite
