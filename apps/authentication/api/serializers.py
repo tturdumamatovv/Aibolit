@@ -27,30 +27,27 @@ class UserRetireeSerializer(serializers.ModelSerializer):
 
 class UserProfileSerializer(serializers.ModelSerializer):
     phone_number = serializers.CharField(read_only=True)
-    profile_picture = serializers.ImageField(required=False, allow_null=True)
-    has_profile_picture = serializers.SerializerMethodField()
     retiree_card_front = serializers.ImageField(required=False, allow_null=True)
     retiree_card_back = serializers.ImageField(required=False, allow_null=True)
 
     class Meta:
         model = User
-        fields = ('id', 'phone_number', 'profile_picture', 'full_name', 'date_of_birth',
-                  'email', 'first_visit', 'has_profile_picture', 'is_retiree',
+        fields = ('id', 'phone_number', 'full_name', 'date_of_birth', 'email', 'first_visit', 'is_retiree',
                   'retiree_card_front', 'retiree_card_back')
         read_only_fields = ('is_retiree',)
 
-    def to_representation(self, instance):
-        ret = super().to_representation(instance)
-        request = self.context.get('request')
-        if not ret['profile_picture']:
-            if request is not None:
-                ret['profile_picture'] = request.build_absolute_uri(settings.MEDIA_URL + 'profile_pictures/default-user.jpg')
-            else:
-                ret['profile_picture'] = settings.MEDIA_URL + 'profile_pictures/default-user.jpg'
-        return ret
+    def validate(self, data):
+        is_retiree = data.get('is_retiree', self.instance.is_retiree if self.instance else False)
+        if is_retiree and not (data.get('retiree_card_front') and data.get('retiree_card_back')):
+            raise serializers.ValidationError({"error": "Необходимо загрузить обе стороны карточки пенсионера."})
+        return data
 
-    def get_has_profile_picture(self, instance):
-        return bool(instance.profile_picture)
+    def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
+        if validated_data.get('is_retiree'):
+            instance.is_retiree_card_approved = False
+            instance.save()
+        return instance
 
 
 class UserAddressSerializer(serializers.ModelSerializer):

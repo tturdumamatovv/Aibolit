@@ -22,13 +22,9 @@ class CustomUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(null=True, blank=True, verbose_name=_('Никнейм пользователя'), max_length=255)
-    name = models.CharField(null=True, blank=True, verbose_name=_('Имя'), max_length=255)
     phone_number = models.CharField(max_length=13, unique=True, verbose_name=_('Номер телефона'))
     code = models.CharField(max_length=4, blank=True, null=True, verbose_name=_('Код'))
     is_staff = models.BooleanField(default=False, verbose_name=_('Работник'))
-    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True, max_length=255,
-                                        verbose_name=_('Изображение профиля'))
     full_name = models.CharField(max_length=255, blank=True, verbose_name=_('Полное имя'))
     date_of_birth = models.DateField(blank=True, null=True, verbose_name=_('Дата рождения'))
     email = models.EmailField(blank=True, verbose_name=_('Имейл'))
@@ -40,6 +36,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                                            verbose_name=_('Лицевая сторона карточки пенсионера'))
     retiree_card_back = models.ImageField(upload_to='retiree_cards/', blank=True, null=True,
                                           verbose_name=_('Оборотная сторона карточки пенсионера'))
+    is_retiree_approved = models.BooleanField(default=False, verbose_name=_('Прошел модерацию'))
 
     objects = CustomUserManager()
 

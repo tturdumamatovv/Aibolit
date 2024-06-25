@@ -121,12 +121,6 @@ class UserProfileUpdateView(generics.RetrieveUpdateAPIView):
 
     def put(self, request, *args, **kwargs):
         instance = self.get_object()
-        profile_picture = request.data.get('profile_picture')
-
-        # If user did not upload profile picture, set default
-        if not profile_picture and not instance.profile_picture:
-            instance.profile_picture = settings.DEFAULT_PROFILE_PICTURE_URL
-
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()

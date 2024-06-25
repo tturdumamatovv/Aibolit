@@ -13,21 +13,22 @@ class AddressInline(admin.StackedInline):
 
 
 class UserAdmin(BaseUserAdmin):
-    list_display = ('phone_number', 'name', 'email', 'is_staff', 'date_of_birth', 'profile_picture')
+    list_display = ('phone_number', 'email', 'is_staff', 'date_of_birth')
     list_filter = ('is_staff', 'is_superuser',)
     fieldsets = (
-        (None, {'fields': ('phone_number', 'password', 'profile_picture')}),
-        ('Личная информация', {'fields': ('name', 'full_name', 'date_of_birth', 'email',
-                                          'is_retiree', 'retiree_card_front', 'retiree_card_back')}),
+        (None, {'fields': ('phone_number', 'password')}),
+        ('Личная информация', {'fields': ('full_name', 'date_of_birth', 'email',
+                                          'is_retiree', 'retiree_card_front', 'retiree_card_back',
+                                          'is_retiree_approved')}),
 
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('phone_number', 'name', 'email', 'password1', 'password2')}
+            'fields': ('phone_number', 'email', 'password1', 'password2')}
          ),
     )
-    search_fields = ('phone_number', 'name', 'email')
+    search_fields = ('phone_number', 'email')
     ordering = ('phone_number',)
     filter_horizontal = ('groups', 'user_permissions',)
     inlines = [AddressInline]
