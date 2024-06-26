@@ -4,11 +4,20 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from apps.medicine.models import Product, Category, Favorite, RecentlyViewedProduct
+from apps.medicine.models import (
+    Product,
+    Category,
+    Favorite,
+    RecentlyViewedProduct
+)
 from .filters import ProductFilter
-from .serializers import ProductSerializer, ProductDetailSerializer, CategorySerializer, FavoriteSerializer, \
-    RecentlyViewedSerializer #, ProductDocumentSerializer
-# from ..documents import ProductDocument
+from .serializers import (
+    ProductSerializer,
+    ProductDetailSerializer,
+    CategorySerializer,
+    FavoriteSerializer,
+    RecentlyViewedSerializer
+)
 
 
 class ProductListView(generics.ListAPIView):
@@ -74,22 +83,3 @@ class ProductOfTheDayListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Product.objects.filter(is_product_of_the_day=True).order_by('?')
-
-
-# class ProductDocumentView(DocumentViewSet):
-#     document = ProductDocument
-#     serializer_class = ProductDocumentSerializer
-#     filter_backends = [
-#         FilteringFilterBackend,
-#         OrderingFilterBackend,
-#         DefaultOrderingFilterBackend,
-#         CompoundSearchFilterBackend,
-#     ]
-#     search_fields = ('name',)
-#     filter_fields = {
-#         'name.raw': 'name.raw',
-#     }
-#     ordering_fields = {
-#         'name.raw': 'name.raw',
-#     }
-#     ordering = ('name.raw',)

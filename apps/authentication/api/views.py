@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from django.contrib.auth.models import User
-from django.conf import settings
 
 from firebase_admin import auth as firebase_auth
 import firebase_admin
