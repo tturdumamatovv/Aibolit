@@ -35,11 +35,6 @@ class ImageFormInline(admin.TabularInline):
     extra = 1
 
 
-@admin.action(description='Загрузить товары из API')
-def load_products_action(modeladmin, request, queryset):
-    load_products_from_api()
-    modeladmin.message_user(request, "Задача на загрузку товаров была успешно поставлена в очередь.", messages.SUCCESS)
-    return HttpResponseRedirect(request.get_full_path())
 
 
 @admin.register(Product)
@@ -52,7 +47,21 @@ class ProductAdmin(admin.ModelAdmin):
     verbose_name = "Продукт"
     verbose_name_plural = "Продукты"
     inlines = [ImageFormInline, PurposeInline, ProductTypeInline, VolumeInline, IndicationInline, DosageFormInline]
-    actions = [load_products_action]
+    actions = ['load_products_action', 'change_category_action']
+
+    @admin.action(description='Загрузить товары из API')
+    def load_products_action(modeladmin, request, queryset):
+        load_products_from_api()
+        modeladmin.message_user(request, "Задача на загрузку товаров была успешно поставлена в очередь.",
+                                messages.SUCCESS)
+        return HttpResponseRedirect(request.get_full_path())
+
+    @admin.action(description="Изменить категории")
+    def change_category_action(modeladmin, request, queryset):
+        selected = request.POST.getlist("_selected_action")
+        return HttpResponseRedirect(
+            f"/admin/change_category/?ids={','.join(selected)}&action=change&next={request.get_full_path()}"
+        )
 
 
 @admin.register(Category)
