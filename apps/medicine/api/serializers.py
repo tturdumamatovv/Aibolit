@@ -1,4 +1,7 @@
+from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
 from rest_framework import serializers
+
+from apps.medicine.documents import ProductDocument
 from apps.medicine.models import Product, Category, ProductImage, Favorite
 
 from django.conf import settings
@@ -112,3 +115,21 @@ class FavoriteSerializer(serializers.ModelSerializer):
         product = validated_data['product_id']
         favorite, created = Favorite.objects.get_or_create(user=user, product=product)
         return favorite
+
+
+
+
+class ProductDocumentSerializer(DocumentSerializer):
+    class Meta:
+        document = ProductDocument
+        fields = (
+            'id',
+            'name',
+            'code',
+            'price',
+            'discounted_price',
+            'manufacturer',
+            'category',
+            'sklad',
+            'ostatok',
+        )

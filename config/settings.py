@@ -9,9 +9,10 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-import os
 import datetime
+import os
 from pathlib import Path
+
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -42,12 +43,20 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_spectacular',
+    'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf',
     # Created
     'apps.authentication',
     'apps.medicine',
     'apps.order',
 
 ]
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'http://localhost:9200',  # Убедитесь, что здесь указана схема (http://)
+        'timeout': 30
+    },
+}
 
 AUTH_USER_MODEL = "authentication.User"
 
@@ -143,7 +152,7 @@ LANGUAGES = (
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
@@ -171,7 +180,6 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
-
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=7),
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=7)
@@ -179,14 +187,13 @@ SIMPLE_JWT = {
 
 DEFAULT_PROFILE_PICTURE_URL = MEDIA_URL + 'profile_pictures/default-user.jpg'
 
-
 SPECTACULAR_SETTINGS = {
     "TITLE": "Aibolit OpenAPI",
     "DESCRIPTION": "Описание нашего API в разработке...",
     'COMPONENT_SPLIT_REQUEST': True,
     "VERSION": "1.0.0",
     "SCHEMA_PATH_PREFIX": r"/api/v[0-9]",
-    "SERVE_PERMISSIONS": ("rest_framework.permissions.IsAdminUser", ),
+    "SERVE_PERMISSIONS": ("rest_framework.permissions.IsAdminUser",),
     "SERVE_AUTHENTICATION": ('rest_framework.authentication.SessionAuthentication',
                              'rest_framework.authentication.BasicAuthentication'),
     "PREPROCESSING_HOOKS": ("apps.openapi.preprocessors.get_urls_preprocessor",),
@@ -201,7 +208,6 @@ SPECTACULAR_SETTINGS = {
     # },
     "SERVE_PERMISSIONS": ("rest_framework.permissions.AllowAny",)
 }
-
 
 SIMPLEUI_HOME_INFO = False
 SIMPLEUI_HOME_ACTION = False
