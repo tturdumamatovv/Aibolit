@@ -1,5 +1,4 @@
-from django_elasticsearch_dsl_drf.filter_backends import OrderingFilterBackend, FilteringFilterBackend, \
-    DefaultOrderingFilterBackend, SearchFilterBackend
+from django_elasticsearch_dsl_drf.filter_backends import OrderingFilterBackend, FilteringFilterBackend, DefaultOrderingFilterBackend, SearchFilterBackend
 from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
 from rest_framework import generics, permissions, status
 from rest_framework.pagination import PageNumberPagination
@@ -90,7 +89,6 @@ class ProductDocumentViewSet(DocumentViewSet):
         OrderingFilterBackend,
         DefaultOrderingFilterBackend,
         SearchFilterBackend,
-
     ]
     search_fields = (
         'name',

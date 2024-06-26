@@ -1,9 +1,7 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
-from .views import (ProductListView, CategoryListView, ProductDetailView, RecentlyViewedListView,
-                    FavoriteToggleView, FavoriteListView, ProductOfTheDayListView)
-from .views import ProductListView, CategoryListView, ProductDetailView, FavoriteToggleView, FavoriteListView, \
-    ProductDocumentViewSet
+from .views import ProductListView, CategoryListView, ProductDetailView, FavoriteToggleView, FavoriteListView, ProductDocumentViewSet
 
 router = DefaultRouter()
 router.register(r'product-search', ProductDocumentViewSet, basename='productdocument')
