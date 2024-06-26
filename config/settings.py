@@ -54,7 +54,7 @@ INSTALLED_APPS = [
 ]
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': 'http://localhost:9200',  # Убедитесь, что здесь указана схема (http://)
+        'hosts': 'http://localhost:9200',
         'timeout': 30
     },
 }

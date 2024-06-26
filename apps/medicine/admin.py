@@ -1,5 +1,8 @@
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.http import HttpResponseRedirect
+
 from .models import (Category, Product, Purpose, ProductType, Volume, Indication, DosageForm, ProductImage)
+from .tasks import load_products_from_api
 
 
 class PurposeInline(admin.TabularInline):  # или admin.StackedInline для более детализированного отображения
@@ -32,6 +35,13 @@ class ImageFormInline(admin.TabularInline):
     extra = 1
 
 
+@admin.action(description='Загрузить товары из API')
+def load_products_action(modeladmin, request, queryset):
+    load_products_from_api()
+    modeladmin.message_user(request, "Задача на загрузку товаров была успешно поставлена в очередь.", messages.SUCCESS)
+    return HttpResponseRedirect(request.get_full_path())
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     filter_horizontal = ('related_products', 'similar_products')
@@ -42,6 +52,7 @@ class ProductAdmin(admin.ModelAdmin):
     verbose_name = "Продукт"
     verbose_name_plural = "Продукты"
     inlines = [ImageFormInline, PurposeInline, ProductTypeInline, VolumeInline, IndicationInline, DosageFormInline]
+    actions = [load_products_action]
 
 
 @admin.register(Category)
