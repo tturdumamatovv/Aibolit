@@ -268,6 +268,32 @@ SIMPLEUI_CONFIG = {
             ]
         },
         {
+            'name': 'Статические страницы',
+            'icon': 'fa fa-list',
+            'models': [
+                {
+                    'name': 'Страницы',
+                    'icon': 'fa fa-file',
+                    'url': '/admin/pages/staticpage/'
+                },
+                {
+                    'name': 'Баннеры',
+                    'icon': 'fa fa-image',
+                    'url': '/admin/pages/banner/'
+                },
+                {
+                    'name': 'Партнеры',
+                    'icon': 'fa fa-handshake',
+                    'url': '/admin/pages/partner/'
+                },
+                {
+                    'name': 'Информации о скидках',
+                    'icon': 'fa fa-info-circle ',
+                    'url': '/admin/pages/discountinfo/'
+                },
+            ]
+        },
+        {
             'name': 'Настройки',
             'icon': 'fa fa-cog',
             'models': [

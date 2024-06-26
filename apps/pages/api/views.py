@@ -1,8 +1,8 @@
 from rest_framework import generics
 from rest_framework.response import Response
 
-from apps.pages.api.serializers import StaticPageSerializer
-from apps.pages.models import StaticPage
+from apps.pages.api.serializers import StaticPageSerializer, BannerSerializer, PartnerSerializer, DiscountInfoSerializer
+from apps.pages.models import StaticPage, Banner, Partner, DiscountInfo
 
 
 class StaticPageDetailView(generics.RetrieveAPIView):
@@ -34,3 +34,20 @@ class StaticPageDetailView(generics.RetrieveAPIView):
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
+
+class BannerListView(generics.ListAPIView):
+    queryset = Banner.objects.all()
+    serializer_class = BannerSerializer
+
+
+class PartnerListView(generics.ListAPIView):
+    queryset = Partner.objects.all()
+    serializer_class = PartnerSerializer
+
+
+class DiscountInfoView(generics.RetrieveAPIView):
+    queryset = DiscountInfo.objects.all()
+    serializer_class = DiscountInfoSerializer
+
+    def get_object(self):
+        return self.queryset.first()
