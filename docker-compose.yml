@@ -1,0 +1,45 @@
+version: "3.10"
+
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - "./postgres:/var/lib/postgresql/data"
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.4
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+
+  app:
+    build: .
+    volumes:
+      - .:/config
+      - ./static:/app/static
+      - ./media:/app/media
+    ports:
+      - "8012:8012"
+    command: bash -c "python manage.py collectstatic --no-input && python manage.py migrate && gunicorn config.wsgi:application -w 4 -b 0.0.0.0:8012"
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - elasticsearch
+
+volumes:
+  esdata:
+    driver: local
