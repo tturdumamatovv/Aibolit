@@ -3,7 +3,6 @@ from rest_framework import serializers
 
 # from apps.medicine.documents import ProductDocument
 from apps.medicine.models import Product, Category, ProductImage, Favorite, RecentlyViewedProduct
-from apps.medicine.documents import ProductDocument
 
 from django.conf import settings
 

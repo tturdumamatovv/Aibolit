@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'apps.authentication',
     'apps.medicine',
     'apps.order',
+    'apps.pages'
 
 ]
 ELASTICSEARCH_DSL = {
