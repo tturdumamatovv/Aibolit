@@ -5,9 +5,9 @@ from rest_framework.permissions import IsAuthenticated
 
 from django_filters import rest_framework as filters
 
-from apps.medicine.models import Product, Category, Favorite
+from apps.medicine.models import Product, Category, Favorite, RecentlyViewedProduct
 from .filters import ProductFilter
-from .serializers import ProductSerializer, ProductDetailSerializer, CategorySerializer, FavoriteSerializer
+from .serializers import ProductSerializer, ProductDetailSerializer, CategorySerializer, FavoriteSerializer, RecentlyViewedSerializer
 
 
 class ProductListView(generics.ListAPIView):
@@ -27,6 +27,13 @@ class CategoryListView(generics.ListAPIView):
 class ProductDetailView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductDetailSerializer
+
+    def get_object(self):
+        obj = super().get_object()
+        # Создаем или обновляем запись RecentlyViewedProduct для текущего пользователя и просматриваемого товара
+        if self.request.user.is_authenticated:
+            RecentlyViewedProduct.objects.get_or_create(user=self.request.user, product=obj)
+        return obj
 
 
 class FavoriteToggleView(generics.GenericAPIView):
@@ -56,3 +63,20 @@ class FavoriteListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Favorite.objects.filter(user=self.request.user).order_by('-created_at')
+
+
+class RecentlyViewedListView(generics.ListAPIView):
+    queryset = RecentlyViewedProduct.objects.all()
+    serializer_class = RecentlyViewedSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return RecentlyViewedProduct.objects.filter(user=self.request.user).order_by('-viewed_at')
+
+
+class ProductOfTheDayListView(generics.ListAPIView):
+    serializer_class = ProductSerializer
+    pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        return Product.objects.filter(is_product_of_the_day=True).order_by('?')

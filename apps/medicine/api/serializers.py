@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.medicine.models import Product, Category, ProductImage, Favorite
+from apps.medicine.models import Product, Category, ProductImage, Favorite, RecentlyViewedProduct
 
 from django.conf import settings
 
@@ -112,3 +112,11 @@ class FavoriteSerializer(serializers.ModelSerializer):
         product = validated_data['product_id']
         favorite, created = Favorite.objects.get_or_create(user=user, product=product)
         return favorite
+
+
+class RecentlyViewedSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+
+    class Meta:
+        model = RecentlyViewedProduct
+        fields = ('id', 'product', 'viewed_at')

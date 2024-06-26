@@ -43,6 +43,7 @@ class Product(models.Model):
                                            verbose_name=_("Цена со скидкой"))
     related_products = models.ManyToManyField('self', blank=True, verbose_name=_("Другие варианты этого продукта"))
     similar_products = models.ManyToManyField('self', blank=True, verbose_name=_("Похожие продукты"))
+    is_product_of_the_day = models.BooleanField(default=False, verbose_name=_("Товар дня"))
 
     def __str__(self):
         return self.name
@@ -152,3 +153,13 @@ class Favorite(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.product.name}"
+
+
+class RecentlyViewedProduct(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recently_viewed')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    viewed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-viewed_at']
+        unique_together = ('user', 'product')
