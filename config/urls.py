@@ -6,8 +6,10 @@ from django.conf.urls.static import static
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 
+from apps.medicine.api.views import admin_change_category
 
 urlpatterns = [
+    path("admin/change_category/", admin_change_category, name="admin_change_category"),
     path('admin/', admin.site.urls),
     path('api/v1/', include('apps.authentication.api.urls')),
     path('api/v1/', include('apps.medicine.api.urls')),

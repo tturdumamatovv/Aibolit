@@ -1,0 +1,12 @@
+<ul class="category-list">
+  {% for category in categories %}
+    <li>
+      <label>
+        <input type="radio"
+               name="category"
+               value="{{ category.id }}" />
+        <span>{{ category.name }}</span>
+      </label>
+    </li>
+  {% endfor %}
+</ul>

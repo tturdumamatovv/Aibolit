@@ -1,5 +1,6 @@
 from django.contrib import admin, messages
 from django.http import HttpResponseRedirect
+from django.shortcuts import render
 
 from .models import (Category, Product, Purpose, ProductType, Volume, Indication, DosageForm, ProductImage)
 from .tasks import load_products_from_api
@@ -72,3 +73,4 @@ class CategoryAdmin(admin.ModelAdmin):
     ordering = ('code',)
     verbose_name = "Категория"
     verbose_name_plural = "Категории"
+

@@ -1,3 +1,6 @@
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django_filters import rest_framework as filters
 from rest_framework import generics, permissions, status
 from rest_framework.pagination import PageNumberPagination
@@ -83,3 +86,29 @@ class ProductOfTheDayListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Product.objects.filter(is_product_of_the_day=True).order_by('?')
+
+
+def admin_change_category(request):
+    ids = request.GET.get("ids", "").split(",")
+    action = request.GET.get("action", "change")
+    items = Product.objects.filter(id__in=ids)
+
+    if request.method == "POST":
+        category = request.POST.get("category")
+        if action == "add":
+            if category:
+                for item in items:
+                    item.category = Category.objects.get(id=category)
+                    item.save()
+                    messages.success(request, f"Added categories to {len(items)} product(s).")
+        else:
+            for item in items:
+                item.category = Category.objects.get(id=category)
+                item.save()
+            messages.success(request, f"Changed the category of {len(items)} product(s).")
+
+        next_url = request.GET.get("next", "/admin/medicine/product/")
+        return HttpResponseRedirect(next_url)
+
+    categories = Category.objects.all()
+    return render(request, "admin/change_category.html", {"items": items, "categories": categories, "action": action})

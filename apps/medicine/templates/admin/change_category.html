@@ -1,0 +1,74 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+  <style>
+    .category-container {
+      border: 1px solid #ccc;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      box-shadow: 2px 2px 2px #aaa;
+    }
+
+    .category-title {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    .category-list {
+      margin: 0;
+      padding-left: 0;
+    }
+
+    .category-list>li {
+      list-style-type: none;
+      margin: 10px 0;
+      padding: 5px;
+      transition: background-color 0.2s;
+    }
+
+    .category-list>li:hover {
+      background-color: #f5f5f5;
+    }
+
+    /* Отступ для дочерних элементов */
+    .category-list .category-list {
+      padding-left: 20px;
+    }
+
+    .category-list>li>label {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .category-list>li>label>span {
+      margin-left: 10px;
+    }
+
+    .submit-btn {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .submit-btn:hover {
+      background-color: #45a049;
+    }
+  </style>
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="{{ action }}" />
+    <div class="category-container">
+      <div class="category-title">Change categories for selected items:</div>
+      {% include "admin/_category_list.html" with categories=categories multi_select=True %}
+    </div>
+    <button class="submit-btn" type="submit">Submit</button>
+  </form>
+{% endblock content %}
