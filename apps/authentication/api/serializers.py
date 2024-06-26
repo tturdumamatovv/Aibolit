@@ -24,7 +24,6 @@ class UserRetireeSerializer(serializers.ModelSerializer):
         fields = ['is_retiree']
 
 
-
 class UserProfileSerializer(serializers.ModelSerializer):
     phone_number = serializers.CharField(read_only=True)
     retiree_card_front = serializers.ImageField(required=False, allow_null=True)
@@ -33,8 +32,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'phone_number', 'full_name', 'date_of_birth', 'email', 'first_visit', 'is_retiree',
-                  'retiree_card_front', 'retiree_card_back')
-        read_only_fields = ('is_retiree',)
+                  'retiree_card_front', 'retiree_card_back', 'bonus_points')
+        read_only_fields = ('is_retiree', 'bonus_points')
 
     def validate(self, data):
         is_retiree = data.get('is_retiree', self.instance.is_retiree if self.instance else False)

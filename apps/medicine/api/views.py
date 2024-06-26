@@ -1,6 +1,7 @@
 # from django_elasticsearch_dsl_drf.filter_backends import OrderingFilterBackend, FilteringFilterBackend, \
 #     DefaultOrderingFilterBackend, SearchFilterBackend
 # from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
+
 from rest_framework import generics, permissions, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -8,10 +9,9 @@ from rest_framework.permissions import IsAuthenticated
 
 from django_filters import rest_framework as filters
 
-from apps.medicine.models import Product, Category, Favorite
+from apps.medicine.models import Product, Category, Favorite, RecentlyViewedProduct
 from .filters import ProductFilter
-from .serializers import ProductSerializer, ProductDetailSerializer, CategorySerializer, FavoriteSerializer
-# from ..documents import ProductDocument
+from .serializers import ProductSerializer, ProductDetailSerializer, CategorySerializer, FavoriteSerializer, RecentlyViewedSerializer
 
 
 class ProductListView(generics.ListAPIView):
@@ -88,3 +88,24 @@ class FavoriteListView(generics.ListAPIView):
 #         'discounted_price': 'discounted_price',
 #     }
 #     ordering = ('price',)
+
+
+class RecentlyViewedListView(generics.ListAPIView):
+    queryset = RecentlyViewedProduct.objects.all()
+    serializer_class = RecentlyViewedSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return RecentlyViewedProduct.objects.filter(user=self.request.user).order_by('-viewed_at')
+
+
+class ProductOfTheDayListView(generics.ListAPIView):
+    serializer_class = ProductSerializer
+    pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        return Product.objects.filter(is_product_of_the_day=True).order_by('?')
+
+
+
+

@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from .views import ProductListView, CategoryListView, ProductDetailView, FavoriteToggleView, FavoriteListView
 
+
 # router = DefaultRouter()
 # router.register(r'product-search', ProductDocumentViewSet, basename='productdocument')
 urlpatterns = [

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Order, OrderItem
+from .models import Order, OrderItem, BonusConfiguration, DeliveryConfiguration
 
 
 @admin.register(Order)
@@ -32,3 +32,13 @@ class OrderItemAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return False
+
+
+@admin.register(BonusConfiguration)
+class BonusConfigurationAdmin(admin.ModelAdmin):
+    list_display = ['min_order_amount', 'bonus_points']
+
+
+@admin.register(DeliveryConfiguration)
+class DeliveryConfigurationAdmin(admin.ModelAdmin):
+    list_display = ['delivery_cost', 'free_shipping_threshold']

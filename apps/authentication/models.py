@@ -37,6 +37,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     retiree_card_back = models.ImageField(upload_to='retiree_cards/', blank=True, null=True,
                                           verbose_name=_('Оборотная сторона карточки пенсионера'))
     is_retiree_approved = models.BooleanField(default=False, verbose_name=_('Прошел модерацию'))
+    bonus_points = models.PositiveIntegerField(default=0, verbose_name=_('Бонусные баллы'))
 
     objects = CustomUserManager()
 
