@@ -22,8 +22,3 @@ services:
       - .env
     depends_on:
       - db
-      - elasticsearch
-
-volumes:
-  esdata:
-    driver: local
