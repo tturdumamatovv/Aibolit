@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from drf_spectacular.utils import extend_schema_field
+
 from apps.medicine.api.serializers import ProductSerializer
 from apps.medicine.models import Product
 from apps.pages.models import StaticPage, Banner, Partner, DiscountInfo
@@ -30,6 +32,7 @@ class DiscountInfoSerializer(serializers.ModelSerializer):
         model = DiscountInfo
         fields = ['image', 'title', 'text', 'discounted_products']
 
+    @extend_schema_field(serializers.ListSerializer(child=serializers.DictField()))
     def get_discounted_products(self, obj):
         discounted_products = Product.objects.filter(discount_percent__gt=0)
         return ProductSerializer(discounted_products, many=True).data

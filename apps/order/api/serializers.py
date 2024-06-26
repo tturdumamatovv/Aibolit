@@ -2,6 +2,8 @@ from rest_framework import serializers
 
 from django.utils import timezone
 
+from drf_spectacular.utils import extend_schema_field
+
 from apps.authentication.models import UserAddress
 from apps.medicine.models import Product
 from apps.order.models import Order, OrderItem, BonusConfiguration, DeliveryConfiguration
@@ -56,6 +58,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
                   'scheduled_delivery_time', 'total_price', 'total_price_after_bonus', 'used_bonus_points',
                   'bonus_points_earned', 'delivery_cost', 'total_to_pay']
 
+    @extend_schema_field(serializers.DecimalField(max_digits=10, decimal_places=2))
     def get_total_price(self, obj):
         total = 0
         for item in obj.items.all():
@@ -66,12 +69,14 @@ class OrderCreateSerializer(serializers.ModelSerializer):
                 total += product.price * item.quantity
         return total
 
+    @extend_schema_field(serializers.DecimalField(max_digits=10, decimal_places=2))
     def get_total_price_after_bonus(self, obj):
         total_price = self.get_total_price(obj)
         used_bonus_points = obj.used_bonus_points
         total_price -= used_bonus_points
         return total_price
 
+    @extend_schema_field(serializers.IntegerField())
     def get_bonus_points_earned(self, obj):
         total_price = sum(item.product.price * item.quantity for item in obj.items.all())
         bonus_configurations = BonusConfiguration.objects.filter(min_order_amount__lte=total_price).order_by('-min_order_amount')
@@ -80,6 +85,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             return bonus_configurations.first().bonus_points
         return 0
 
+    @extend_schema_field(serializers.DecimalField(max_digits=10, decimal_places=2))
     def get_delivery_cost(self, obj):
         total_price = self.get_total_price(obj)
         delivery_configurations = DeliveryConfiguration.objects.all()
@@ -92,6 +98,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             return delivery_configuration.delivery_cost
         return 0
 
+    @extend_schema_field(serializers.DecimalField(max_digits=10, decimal_places=2))
     def get_total_to_pay(self, obj):
         total_to_pay = self.get_total_price_after_bonus(obj) + self.get_delivery_cost(obj)
         return total_to_pay
@@ -202,5 +209,6 @@ class UserOrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = ['order_number', 'created_at', 'total_items', 'status']
 
+    @extend_schema_field(serializers.IntegerField())
     def get_total_items(self, obj):
         return sum(item.quantity for item in obj.items.all())

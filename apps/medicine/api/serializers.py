@@ -1,5 +1,8 @@
 from django.conf import settings
+
 from rest_framework import serializers
+
+from drf_spectacular.utils import extend_schema_field
 
 from apps.medicine.models import Product, Category, ProductImage, Favorite, RecentlyViewedProduct
 
@@ -85,12 +88,14 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 
         return representation
 
+    @extend_schema_field(serializers.ListSerializer(child=serializers.DictField()))
     def get_related_products(self, instance):
         # Serialize related products
         related_products = instance.related_products.all()
         serializer = ProductSerializer(related_products, many=True, context=self.context)
         return serializer.data
 
+    @extend_schema_field(serializers.ListSerializer(child=serializers.DictField()))
     def get_similar_products(self, instance):
         # Serialize related products
         related_products = instance.related_products.all()
