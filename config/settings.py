@@ -230,11 +230,11 @@ SIMPLEUI_CONFIG = {
         },
         {
             'name': 'Продукты и категории',
-            'icon': 'fa fa-book',
+            'icon': 'fa fa-heartbeat',
             'models': [
                 {
                     'name': 'Продукты',
-                    'icon': 'fa fa-notes-medical',
+                    'icon': 'fa fa-medkit',
                     'url': '/admin/medicine/product/'
                 },
                 {
@@ -246,7 +246,7 @@ SIMPLEUI_CONFIG = {
         },
         {
             'name': 'Заказы',
-            'icon': 'fa fa-book',
+            'icon': 'fa fa-shopping-cart',
             'models': [
                 {
                     'name': 'Заказы',
@@ -257,6 +257,22 @@ SIMPLEUI_CONFIG = {
                     'name': 'Элементы заказа',
                     'icon': 'fa fa-shopping-basket',
                     'url': '/admin/order/orderitem/'
+                },
+            ]
+        },
+        {
+            'name': 'Настройки',
+            'icon': 'fa fa-cog',
+            'models': [
+                {
+                    'name': 'Бонусы',
+                    'icon': 'fa fa-gift',
+                    'url': '/admin/order/bonusconfiguration/'
+                },
+                {
+                    'name': 'Доставка',
+                    'icon': 'fa fa-shipping-fast',
+                    'url': '/admin/order/deliveryconfiguration/'
                 },
             ]
         },

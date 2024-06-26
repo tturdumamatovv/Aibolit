@@ -16,7 +16,7 @@ class UserAdmin(BaseUserAdmin):
     list_display = ('phone_number', 'email', 'is_staff', 'date_of_birth')
     list_filter = ('is_staff', 'is_superuser',)
     fieldsets = (
-        (None, {'fields': ('phone_number', 'password')}),
+        (None, {'fields': ('phone_number', 'bonus_points', 'password')}),
         ('Личная информация', {'fields': ('full_name', 'date_of_birth', 'email',
                                           'is_retiree', 'retiree_card_front', 'retiree_card_back',
                                           'is_retiree_approved')}),
