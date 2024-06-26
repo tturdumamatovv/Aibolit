@@ -1,4 +1,3 @@
-
 from django_filters import rest_framework as filters
 from rest_framework import generics, permissions, status
 from rest_framework.pagination import PageNumberPagination
