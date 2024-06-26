@@ -1,10 +1,10 @@
 # from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
+from django.conf import settings
+from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
 from rest_framework import serializers
 
-# from apps.medicine.documents import ProductDocument
+from apps.medicine.documents import ProductDocument
 from apps.medicine.models import Product, Category, ProductImage, Favorite, RecentlyViewedProduct
-
-from django.conf import settings
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -17,7 +17,6 @@ class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
         fields = ('image', 'main')
-
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -117,22 +116,6 @@ class FavoriteSerializer(serializers.ModelSerializer):
         return favorite
 
 
-#
-#
-# class ProductDocumentSerializer(DocumentSerializer):
-#     class Meta:
-#         document = ProductDocument
-#         fields = (
-#             'id',
-#             'name',
-#             'code',
-#             'price',
-#             'discounted_price',
-#             'manufacturer',
-#             'category',
-#             'sklad',
-#             'ostatok',
-#         )
 class RecentlyViewedSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
 
@@ -141,6 +124,9 @@ class RecentlyViewedSerializer(serializers.ModelSerializer):
         fields = ('id', 'product', 'viewed_at')
 
 
-
-
-
+class ProductDocumentSerializer(DocumentSerializer):
+    class Meta:
+        document = ProductDocument
+        fields = (
+            'name',
+        )
