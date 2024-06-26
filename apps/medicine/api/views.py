@@ -1,10 +1,3 @@
-from django_elasticsearch_dsl_drf.filter_backends import (
-    FilteringFilterBackend,
-    OrderingFilterBackend,
-    DefaultOrderingFilterBackend,
-    CompoundSearchFilterBackend,
-)
-from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
 from django_filters import rest_framework as filters
 from rest_framework import generics, permissions, status
 from rest_framework.pagination import PageNumberPagination
@@ -83,9 +76,6 @@ class ProductOfTheDayListView(generics.ListAPIView):
         return Product.objects.filter(is_product_of_the_day=True).order_by('?')
 
 
-
-
-#
 # class ProductDocumentView(DocumentViewSet):
 #     document = ProductDocument
 #     serializer_class = ProductDocumentSerializer

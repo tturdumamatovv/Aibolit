@@ -1,6 +1,5 @@
 # from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
 from django.conf import settings
-from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
 from rest_framework import serializers
 
 # from apps.medicine.documents import ProductDocument
