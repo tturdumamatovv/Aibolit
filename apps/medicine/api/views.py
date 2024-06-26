@@ -14,8 +14,8 @@ from rest_framework.response import Response
 from apps.medicine.models import Product, Category, Favorite, RecentlyViewedProduct
 from .filters import ProductFilter
 from .serializers import ProductSerializer, ProductDetailSerializer, CategorySerializer, FavoriteSerializer, \
-    RecentlyViewedSerializer, ProductDocumentSerializer
-from ..documents import ProductDocument
+    RecentlyViewedSerializer #, ProductDocumentSerializer
+# from ..documents import ProductDocument
 
 
 class ProductListView(generics.ListAPIView):
@@ -85,22 +85,21 @@ class ProductOfTheDayListView(generics.ListAPIView):
 
 
 
-
-
-class ProductDocumentView(DocumentViewSet):
-    document = ProductDocument
-    serializer_class = ProductDocumentSerializer
-    filter_backends = [
-        FilteringFilterBackend,
-        OrderingFilterBackend,
-        DefaultOrderingFilterBackend,
-        CompoundSearchFilterBackend,
-    ]
-    search_fields = ('name',)
-    filter_fields = {
-        'name.raw': 'name.raw',
-    }
-    ordering_fields = {
-        'name.raw': 'name.raw',
-    }
-    ordering = ('name.raw',)
+#
+# class ProductDocumentView(DocumentViewSet):
+#     document = ProductDocument
+#     serializer_class = ProductDocumentSerializer
+#     filter_backends = [
+#         FilteringFilterBackend,
+#         OrderingFilterBackend,
+#         DefaultOrderingFilterBackend,
+#         CompoundSearchFilterBackend,
+#     ]
+#     search_fields = ('name',)
+#     filter_fields = {
+#         'name.raw': 'name.raw',
+#     }
+#     ordering_fields = {
+#         'name.raw': 'name.raw',
+#     }
+#     ordering = ('name.raw',)

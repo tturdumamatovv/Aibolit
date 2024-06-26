@@ -3,7 +3,7 @@ from django.conf import settings
 from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
 from rest_framework import serializers
 
-from apps.medicine.documents import ProductDocument
+# from apps.medicine.documents import ProductDocument
 from apps.medicine.models import Product, Category, ProductImage, Favorite, RecentlyViewedProduct
 
 
@@ -124,9 +124,9 @@ class RecentlyViewedSerializer(serializers.ModelSerializer):
         fields = ('id', 'product', 'viewed_at')
 
 
-class ProductDocumentSerializer(DocumentSerializer):
-    class Meta:
-        document = ProductDocument
-        fields = (
-            'name',
-        )
+# class ProductDocumentSerializer(DocumentSerializer):
+#     class Meta:
+#         document = ProductDocument
+#         fields = (
+#             'name',
+#         )
