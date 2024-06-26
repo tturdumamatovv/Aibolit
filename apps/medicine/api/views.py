@@ -1,6 +1,6 @@
-from django_elasticsearch_dsl_drf.filter_backends import OrderingFilterBackend, FilteringFilterBackend, \
-    DefaultOrderingFilterBackend, SearchFilterBackend
-from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
+# from django_elasticsearch_dsl_drf.filter_backends import OrderingFilterBackend, FilteringFilterBackend, \
+#     DefaultOrderingFilterBackend, SearchFilterBackend
+# from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
 from rest_framework import generics, permissions, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -10,9 +10,8 @@ from django_filters import rest_framework as filters
 
 from apps.medicine.models import Product, Category, Favorite
 from .filters import ProductFilter
-from .serializers import ProductSerializer, ProductDetailSerializer, CategorySerializer, FavoriteSerializer, \
-    ProductDocumentSerializer
-from ..documents import ProductDocument
+from .serializers import ProductSerializer, ProductDetailSerializer, CategorySerializer, FavoriteSerializer
+# from ..documents import ProductDocument
 
 
 class ProductListView(generics.ListAPIView):
@@ -62,30 +61,30 @@ class FavoriteListView(generics.ListAPIView):
     def get_queryset(self):
         return Favorite.objects.filter(user=self.request.user).order_by('-created_at')
 
-
-
-class ProductDocumentViewSet(DocumentViewSet):
-    document = ProductDocument
-    serializer_class = ProductDocumentSerializer
-    filter_backends = [
-        FilteringFilterBackend,
-        OrderingFilterBackend,
-        DefaultOrderingFilterBackend,
-        SearchFilterBackend,
-
-    ]
-    search_fields = (
-        'name',
-    )
-    filter_fields = {
-        'name': 'name',
-        'price': 'price',
-        'discounted_price': 'discounted_price',
-        'manufacturer': 'manufacturer',
-        'category': 'category',
-    }
-    ordering_fields = {
-        'price': 'price',
-        'discounted_price': 'discounted_price',
-    }
-    ordering = ('price',)
+#
+#
+# class ProductDocumentViewSet(DocumentViewSet):
+#     document = ProductDocument
+#     serializer_class = ProductDocumentSerializer
+#     filter_backends = [
+#         FilteringFilterBackend,
+#         OrderingFilterBackend,
+#         DefaultOrderingFilterBackend,
+#         SearchFilterBackend,
+#
+#     ]
+#     search_fields = (
+#         'name',
+#     )
+#     filter_fields = {
+#         'name': 'name',
+#         'price': 'price',
+#         'discounted_price': 'discounted_price',
+#         'manufacturer': 'manufacturer',
+#         'category': 'category',
+#     }
+#     ordering_fields = {
+#         'price': 'price',
+#         'discounted_price': 'discounted_price',
+#     }
+#     ordering = ('price',)
