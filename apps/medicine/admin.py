@@ -1,4 +1,8 @@
 from django.contrib import admin
+from django.urls import path
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+# from .tasks import load_products_from_api
 
 from .models import Product, Category
 
@@ -11,9 +15,13 @@ class CategoryAdmin(admin.ModelAdmin):
     ordering = ('code',)
 
 
-@admin.register(Product)
+@admin.action(description='Загрузить товары из API')
+def load_products_action(modeladmin, request, queryset):
+    # load_products_from_api.delay()
+    modeladmin.message_user(request, "Задача на загрузку товаров была успешно поставлена в очередь.", messages.SUCCESS)
+    return HttpResponseRedirect(request.get_full_path())
+
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('code', 'name', 'sklad', 'ostatok', 'price', 'manufacturer', 'country', 'category')
-    search_fields = ('name', 'manufacturer', 'country')
-    list_filter = ('category',)
-    ordering = ('code',)
+    actions = [load_products_action]
+
+admin.site.register(Product, ProductAdmin)
