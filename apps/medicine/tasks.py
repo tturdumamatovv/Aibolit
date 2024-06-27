@@ -26,7 +26,7 @@ def load_products_from_api():
     try:
         # Выполнение запроса
         logger.info("Отправка запроса к API")
-        response = requests.post(url, json=payload, auth=(login, password), timeout=120)
+        response = requests.post(url, json=payload, auth=(login, password), timeout=300)
 
         if response.status_code == 200:
             logger.info("Получен успешный ответ от API")
