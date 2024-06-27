@@ -16,7 +16,7 @@ def load_products_from_api(self):
 
     try:
         print("Отправка запроса к API")
-        response = requests.post(url, json=payload, auth=(login, password), timeout=300, verify=False)
+        response = requests.post(url, json=payload, auth=(login, password))
         response.raise_for_status()  # Добавьте проверку успешного выполнения запроса
         data = response.json()
 
