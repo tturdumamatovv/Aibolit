@@ -15,7 +15,7 @@ def load_products_from_api():
     password = "123"
 
     # URL для запроса
-    url = "http://193.176.239.110/1cBaseCabinet/hs/A8/data"
+    url = "https://193.176.239.110/1cBaseCabinet/hs/A8/data"
 
     # Тело запроса
     payload = {
@@ -26,7 +26,7 @@ def load_products_from_api():
     try:
         # Выполнение запроса
         logger.info("Отправка запроса к API")
-        response = requests.post(url, json=payload, auth=(login, password), timeout=1000)
+        response = requests.post(url, json=payload, auth=(login, password), timeout=120)
 
         if response.status_code == 200:
             logger.info("Получен успешный ответ от API")
