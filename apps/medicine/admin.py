@@ -52,7 +52,7 @@ class ProductAdmin(admin.ModelAdmin):
 
     @admin.action(description='Загрузить товары из API')
     def load_products_action(modeladmin, request, queryset):
-        load_products_from_api()
+        load_products_from_api.delay()
         modeladmin.message_user(request, "Задача на загрузку товаров была успешно поставлена в очередь.",
                                 messages.SUCCESS)
         return HttpResponseRedirect(request.get_full_path())
