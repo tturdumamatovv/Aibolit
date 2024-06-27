@@ -210,6 +210,21 @@ SPECTACULAR_SETTINGS = {
     "SERVE_PERMISSIONS": ("rest_framework.permissions.AllowAny",)
 }
 
+
+# settings.py
+
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+
+
+
+
+
 SIMPLEUI_HOME_INFO = False
 SIMPLEUI_HOME_ACTION = False
 SIMPLEUI_HOME_QUICK = True

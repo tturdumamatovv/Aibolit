@@ -6,6 +6,12 @@ from apps.medicine.models import Product
 
 logger = logging.getLogger(__name__)
 
+
+@shared_task
+def add(x, y):
+    return x + y
+
+
 @shared_task
 def load_products_from_api():
     logger.info("Начало выполнения задачи по загрузке товаров из API")
@@ -63,7 +69,9 @@ def load_products_from_api():
                     Product.objects.bulk_create(products_to_create, batch_size=1000)
                     logger.info(f"Создано товаров: {len(products_to_create)}")
                 if products_to_update:
-                    Product.objects.bulk_update(products_to_update, ['name', 'sklad', 'ostatok', 'price', 'manufacturer', 'country'], batch_size=1000)
+                    Product.objects.bulk_update(products_to_update,
+                                                ['name', 'sklad', 'ostatok', 'price', 'manufacturer', 'country'],
+                                                batch_size=1000)
                     logger.info(f"Обновлено товаров: {len(products_to_update)}")
 
             logger.info("Задача по загрузке товаров успешно выполнена")
