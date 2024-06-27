@@ -29,7 +29,7 @@ def load_products_from_api():
         logger.info("Отправка запроса к API: %s", url)
         logger.debug("Параметры запроса: %s", payload)
 
-        response = requests.post(url, json=payload, auth=(login, password), timeout=120)
+        response = requests.post(url, json=payload, auth=(login, password), timeout=300)
 
         logger.info("Статус ответа: %s", response.status_code)
         logger.debug("Ответ API: %s", response.text)
