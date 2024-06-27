@@ -11,7 +11,7 @@ def load_products_from_api(self):
 
     login = "site"
     password = "123"
-    url = "http://193.176.239.110/1cBaseCabinet/hs/A8/data"
+    url = "https://aibolit.tatadev.pro/api/1cBaseCabinet/hs/A8/data"
     payload = {"Request": "Goods", "Date": "20240313000000"}
 
     try:
