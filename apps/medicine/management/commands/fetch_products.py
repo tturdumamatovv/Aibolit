@@ -13,7 +13,7 @@ class Command(BaseCommand):
 
         # Fetch categories
         categories_data = {"Request": "Hierarchy"}
-        response = requests.post(base_url, auth=auth, headers=headers, json=categories_data, timeout=1000)
+        response = requests.post(base_url, auth=auth, headers=headers, json=categories_data)
 
         if response.status_code == 200:
             categories = response.json()
@@ -32,7 +32,7 @@ class Command(BaseCommand):
 
         # Fetch products
         products_data = {"Request": "Goods"}
-        response = requests.post(base_url, auth=auth, headers=headers, json=products_data, timeout=1000)
+        response = requests.post(base_url, auth=auth, headers=headers, json=products_data)
 
         if response.status_code == 200:
             products = response.json()
