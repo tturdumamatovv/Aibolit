@@ -21,7 +21,7 @@ class Category(MPTTModel, models.Model):
     class Meta:
         verbose_name = _("Категория")
         verbose_name_plural = _("Категории")
-        ordering = ["order", "name"]
+        ordering = ['tree_id', 'lft']
 
     class MPTTMeta:
         order_insertion_by = ["name"]
