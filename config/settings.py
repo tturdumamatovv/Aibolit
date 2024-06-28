@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'django_elasticsearch_dsl',
     'django_filters',
+    'mptt',
+    'colorfield',
     # Created
     'apps.authentication',
     'apps.medicine',
@@ -191,8 +193,8 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',  # AutoSchema для drf-spectacular
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    # 'PAGE_SIZE': 10,
 }
 
 SIMPLE_JWT = {

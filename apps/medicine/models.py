@@ -1,21 +1,44 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from colorfield.fields import ColorField
+from mptt.models import MPTTModel, TreeForeignKey
+from unidecode import unidecode
+from django.utils.text import slugify
+
 from apps.authentication.models import User
 
 
-class Category(models.Model):
-    code = models.IntegerField(unique=True, verbose_name=_("Код"))
-    parent_code = models.IntegerField(null=True, blank=True, verbose_name=_("Родительский код"))
-    name = models.CharField(max_length=255, verbose_name=_("Название"))
-    folder = models.BooleanField(default=False, verbose_name=_("Папка"))
-
-    def __str__(self):
-        return self.name
+class Category(MPTTModel, models.Model):
+    name = models.CharField(max_length=255, verbose_name=_('Название'))
+    slug = models.SlugField(max_length=255, unique=True, blank=True, null=True, verbose_name=_('Слаг'))
+    image = models.ImageField(null=True, blank=True, verbose_name=_('Изображение'))
+    background_color = ColorField(default='#FF0000', null=True, verbose_name=_('Фоновый цвет'))
+    parent = TreeForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True,
+                            related_name="children", verbose_name=_("Родительская категория"))
+    order = models.PositiveIntegerField(default=0, editable=False, db_index=True, verbose_name=_('Порядок'))
 
     class Meta:
         verbose_name = _("Категория")
         verbose_name_plural = _("Категории")
+        ordering = ["order", "name"]
+
+    class MPTTMeta:
+        order_insertion_by = ["name"]
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(unidecode(self.name))
+            unique_slug = base_slug
+            counter = 1
+            while Category.objects.filter(slug=unique_slug).exists():
+                unique_slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = unique_slug
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.name}'
 
 
 class Product(models.Model):

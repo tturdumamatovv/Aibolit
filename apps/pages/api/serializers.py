@@ -16,7 +16,7 @@ class StaticPageSerializer(serializers.ModelSerializer):
 class BannerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Banner
-        fields = ['id', 'image', 'link']
+        fields = ['id', 'image', 'product']
 
 
 class PartnerSerializer(serializers.ModelSerializer):

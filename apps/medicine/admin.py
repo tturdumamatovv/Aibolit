@@ -1,6 +1,6 @@
 from django.contrib import admin, messages
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from apps.medicine.forms import CategoryAdminForm
 
 from .models import (Category, Product, Purpose, ProductType, Volume, Indication, DosageForm, ProductImage)
 from .tasks import load_products_from_api
@@ -44,7 +44,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ('code', 'name', 'sklad', 'ostatok', 'price', 'manufacturer', 'country', 'category')
     search_fields = ('name', 'manufacturer', 'country')
     list_filter = ('category',)
-    ordering = ('code',)
+    ordering = ('id',)
     verbose_name = "Продукт"
     verbose_name_plural = "Продукты"
     inlines = [ImageFormInline, PurposeInline, ProductTypeInline, VolumeInline, IndicationInline, DosageFormInline]
@@ -67,10 +67,11 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('code', 'parent_code', 'name', 'folder')
+    form = CategoryAdminForm
+    list_display = ('name', 'parent')
     search_fields = ('name',)
-    list_filter = ('folder',)
-    ordering = ('code',)
+    list_filter = ('name',)
+    ordering = ('id',)
     verbose_name = "Категория"
     verbose_name_plural = "Категории"
 
