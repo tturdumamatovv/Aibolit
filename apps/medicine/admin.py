@@ -1,7 +1,10 @@
 from django.contrib import admin, messages
 from django.http import HttpResponseRedirect
-from apps.medicine.forms import CategoryAdminForm
+from django.utils.safestring import mark_safe
 
+from mptt.admin import DraggableMPTTAdmin
+
+from apps.medicine.forms import CategoryAdminForm
 from .models import (Category, Product, Purpose, ProductType, Volume, Indication, DosageForm, ProductImage)
 from .tasks import load_products_from_api
 
@@ -66,13 +69,21 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(DraggableMPTTAdmin):
     form = CategoryAdminForm
-    list_display = ('name', 'parent')
+    list_display = ('tree_actions', 'indented_title', 'name', 'parent')
     search_fields = ('name',)
     list_filter = ('name',)
     ordering = ('id',)
     verbose_name = "Категория"
     verbose_name_plural = "Категории"
+    mptt_level_indent = 20
 
-
+    @admin.display(description="Название")
+    def indented_title(self, instance):
+        return mark_safe(
+            '<div style="text-indent: {}px">{}</div>'.format(
+                instance._mpttfield('level') * self.mptt_level_indent,
+                instance.name
+            )
+        )
