@@ -75,3 +75,4 @@ class CategoryAdmin(admin.ModelAdmin):
     verbose_name = "Категория"
     verbose_name_plural = "Категории"
 
+
