@@ -44,7 +44,8 @@ class ImageFormInline(admin.TabularInline):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     filter_horizontal = ('related_products', 'similar_products')
-    list_display = ('code', 'name', 'sklad', 'ostatok', 'price', 'manufacturer', 'country', 'category')
+    list_display = ('code', 'name', 'sklad', 'ostatok', 'price', 'manufacturer',
+                    'country', 'category', 'is_product_of_the_day')
     search_fields = ('name', 'manufacturer', 'country')
     list_filter = ('category',)
     ordering = ('id',)
