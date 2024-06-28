@@ -27,10 +27,12 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'description', 'ostatok', 'price', 'discount_percent', 'discounted_price', 'images')
 
     def to_representation(self, instance):
-        main_image = instance.images.filter(main=True).first()
-        if not main_image:
-            main_image = instance.images.first()
-
+        if hasattr(instance, 'images'):
+            main_image = instance.images.filter(main=True).first()
+            if not main_image:
+                main_image = instance.images.first()
+        else:
+            main_image = None
         representation = super().to_representation(instance)
         if main_image:
             full_url = self.context['request'].build_absolute_uri(f"{settings.MEDIA_URL}{main_image.image}")
@@ -40,11 +42,12 @@ class ProductSerializer(serializers.ModelSerializer):
 
         representation.pop('images', None)
 
-        if instance.discounted_price is None:
-            representation.pop('discounted_price', None)
-
-        if instance.discount_percent is None or instance.discount_percent == 0.00:
-            representation.pop('discount_percent', None)
+        if hasattr(instance, 'discounted_price'):
+            if instance.discounted_price is None:
+                representation.pop('discounted_price', None)
+        if hasattr(instance, 'discount_percent'):
+            if instance.discount_percent is None or instance.discount_percent == 0.00:
+                representation.pop('discount_percent', None)
 
         return representation
 

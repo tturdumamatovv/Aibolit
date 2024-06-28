@@ -2,7 +2,7 @@ version: "3.10"
 
 services:
   db:
-    image: postgres:latest
+    image: postgres:15
     restart: always
     env_file:
       - .env
@@ -23,6 +23,7 @@ services:
     depends_on:
       - db
       - redis
+      - elasticsearch
 
   celery:
     build: .
@@ -35,17 +36,20 @@ services:
       - db
       - redis
 
-  celery-beat:
-    build: .
-    command: celery -A config beat --loglevel=info
-    volumes:
-      - .:/config
-    env_file:
-      - .env
-    depends_on:
-      - db
-      - redis
-
   redis:
     image: redis:latest
     restart: always
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+
+volumes:
+  esdata:
+    driver: local
