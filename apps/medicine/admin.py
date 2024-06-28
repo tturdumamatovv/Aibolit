@@ -71,16 +71,21 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(Category)
 class CategoryAdmin(DraggableMPTTAdmin):
     form = CategoryAdminForm
-    list_display = ('tree_actions', 'indented_title', 'name', 'parent')
-    search_fields = ('name',)
-    list_filter = ('name',)
-    ordering = ('id',)
-    verbose_name = "Категория"
-    verbose_name_plural = "Категории"
+    list_display = [
+        "tree_actions",
+        "indented_name",
+        "parent",
+    ]
+    list_display_links = ("indented_name",)
+    list_filter = [
+        "parent"
+    ]
+    search_fields = ["id", 'name']
+    list_select_related = ["parent"]
     mptt_level_indent = 20
 
     @admin.display(description="Название")
-    def indented_title(self, instance):
+    def indented_name(self, instance):
         return mark_safe(
             '<div style="text-indent: {}px">{}</div>'.format(
                 instance._mpttfield('level') * self.mptt_level_indent,
