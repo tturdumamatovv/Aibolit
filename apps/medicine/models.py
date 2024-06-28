@@ -9,7 +9,7 @@ from django.utils.text import slugify
 from apps.authentication.models import User
 
 
-class Category(MPTTModel, models.Model):
+class Category(MPTTModel):
     name = models.CharField(max_length=255, verbose_name=_('Название'))
     slug = models.SlugField(max_length=255, unique=True, blank=True, null=True, verbose_name=_('Слаг'))
     image = models.ImageField(null=True, blank=True, verbose_name=_('Изображение'))
@@ -18,13 +18,13 @@ class Category(MPTTModel, models.Model):
                             related_name="children", verbose_name=_("Родительская категория"))
     order = models.PositiveIntegerField(default=0, editable=False, db_index=True, verbose_name=_('Порядок'))
 
+    class MPTTMeta:
+        order_insertion_by = ["name"]
+
     class Meta:
         verbose_name = _("Категория")
         verbose_name_plural = _("Категории")
-        ordering = ['tree_id', 'lft']
-
-    class MPTTMeta:
-        order_insertion_by = ["name"]
+        ordering = ['order', 'name']
 
     def save(self, *args, **kwargs):
         if not self.slug:
