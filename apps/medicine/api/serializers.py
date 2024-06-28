@@ -13,7 +13,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('name', )
+        fields = ('name', 'children', 'parent')
 
     def get_fields(self):
         fields = super().get_fields()
