@@ -52,6 +52,7 @@ class ProductAdmin(admin.ModelAdmin):
     verbose_name_plural = "Продукты"
     inlines = [ImageFormInline, PurposeInline, ProductTypeInline, VolumeInline, IndicationInline, DosageFormInline]
     actions = ['load_products_action', 'change_category_action']
+    list_editable = ['is_product_of_the_day']
 
     @admin.action(description='Загрузить товары из API')
     def load_products_action(modeladmin, request, queryset):
