@@ -8,9 +8,34 @@ from apps.medicine.models import Product, Category, ProductImage, Favorite, Rece
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    children = serializers.SerializerMethodField()
+    parent = serializers.SerializerMethodField()
+
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = ('name', )
+
+    def get_fields(self):
+        fields = super().get_fields()
+        return fields
+
+    def get_children(self, obj):
+        if 'serialized_categories' not in self.context:
+            self.context['serialized_categories'] = set()
+        if obj.id in self.context['serialized_categories']:
+            return []
+        self.context['serialized_categories'].add(obj.id)
+        serializer = CategorySerializer(obj.children.all(), many=True, context=self.context)
+        return serializer.data
+
+    def get_parent(self, obj):
+        if obj.parent:
+            return {
+                'id': obj.parent.id,
+                'name': obj.parent.name,
+                'slug': obj.parent.slug
+            }
+        return None
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
