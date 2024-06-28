@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django_filters import rest_framework as filters
 from rest_framework import generics, permissions, status
+from rest_framework.decorators import api_view
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -21,6 +22,7 @@ from .serializers import (
     FavoriteSerializer,
     RecentlyViewedSerializer
 )
+from ..documents import ProductDocument
 
 
 class ProductListView(generics.ListAPIView):
@@ -112,3 +114,16 @@ def admin_change_category(request):
 
     categories = Category.objects.all()
     return render(request, "admin/change_category.html", {"items": items, "categories": categories, "action": action})
+
+
+@api_view(['GET'])
+def search_products(request):
+    query = request.GET.get('q')
+    if query:
+        search_results = ProductDocument.search().query("match", name=query)
+    else:
+        search_results = ProductDocument.search()
+
+    products = [hit.to_dict() for hit in search_results]
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)

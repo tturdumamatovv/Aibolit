@@ -43,8 +43,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_spectacular',
-    # 'django_elasticsearch_dsl',
-    # 'django_elasticsearch_dsl_drf',
+    'django_elasticsearch_dsl',
+    'django_filters',
     # Created
     'apps.authentication',
     'apps.medicine',
@@ -52,9 +52,10 @@ INSTALLED_APPS = [
     'apps.pages'
 
 ]
+
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': 'http://localhost:9200',
+        'hosts': 'http://elasticsearch:9200',
         'timeout': 30
     },
 }
