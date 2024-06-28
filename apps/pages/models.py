@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from apps.medicine.models import Product
+
 
 class StaticPage(models.Model):
     title = models.CharField(max_length=200, unique=True, verbose_name=_('Заголовок'))
@@ -17,7 +19,7 @@ class StaticPage(models.Model):
 
 class Banner(models.Model):
     image = models.FileField(upload_to='banners/', verbose_name=_('Изображение'))
-    link = models.URLField(verbose_name=_('Ссылка'))
+    product = models.OneToOneField(Product, on_delete=models.CASCADE, verbose_name=_('Продукт'), blank=True, null=True)
 
     class Meta:
         verbose_name = _('Баннер')

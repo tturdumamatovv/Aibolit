@@ -25,10 +25,14 @@ from .serializers import (
 from ..documents import ProductDocument
 
 
+class CustomPagination(PageNumberPagination):
+    page_size = 20
+
+
 class ProductListView(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    pagination_class = PageNumberPagination
+    pagination_class = CustomPagination
     filter_backends = [filters.DjangoFilterBackend]
     filterset_class = ProductFilter
 
@@ -36,7 +40,6 @@ class ProductListView(generics.ListAPIView):
 class CategoryListView(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    pagination_class = PageNumberPagination
 
 
 class ProductDetailView(generics.RetrieveAPIView):
@@ -68,6 +71,7 @@ class FavoriteToggleView(generics.GenericAPIView):
 class FavoriteListView(generics.ListAPIView):
     serializer_class = FavoriteSerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         return Favorite.objects.filter(user=self.request.user).order_by('-created_at')
@@ -77,6 +81,7 @@ class RecentlyViewedListView(generics.ListAPIView):
     queryset = RecentlyViewedProduct.objects.all()
     serializer_class = RecentlyViewedSerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         return RecentlyViewedProduct.objects.filter(user=self.request.user).order_by('-viewed_at')
@@ -84,7 +89,7 @@ class RecentlyViewedListView(generics.ListAPIView):
 
 class ProductOfTheDayListView(generics.ListAPIView):
     serializer_class = ProductSerializer
-    pagination_class = PageNumberPagination
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         return Product.objects.filter(is_product_of_the_day=True).order_by('?')

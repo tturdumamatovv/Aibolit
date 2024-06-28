@@ -11,7 +11,7 @@ class StaticPageAdmin(admin.ModelAdmin):
 
 @admin.register(Banner)
 class BannerAdmin(admin.ModelAdmin):
-    list_display = ['id', 'image', 'link']
+    list_display = ['id', 'image', 'product']
     list_display_links = ['image']
 
 
