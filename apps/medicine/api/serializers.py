@@ -77,8 +77,6 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializerForDetailProduct(serializers.ModelSerializer):
-    children = serializers.SerializerMethodField()
-    parent = serializers.SerializerMethodField()
 
     class Meta:
         model = Category
