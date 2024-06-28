@@ -7,8 +7,11 @@ from .views import (
     FavoriteToggleView,
     FavoriteListView,
     RecentlyViewedListView,
-    ProductOfTheDayListView
+    ProductOfTheDayListView,
+    search_products
+
 )
+
 
 urlpatterns = [
     path('products/', ProductListView.as_view(), name='product-list'),
@@ -17,7 +20,8 @@ urlpatterns = [
 
     path('favorites/toggle/', FavoriteToggleView.as_view(), name='favorite-toggle'),
     path('favorites/', FavoriteListView.as_view(), name='favorite-list'),
+
     path('recently-viewed/', RecentlyViewedListView.as_view(), name='recently-viewed'),
     path('product-of-the-day/', ProductOfTheDayListView.as_view(), name='recently-viewed'),
-    # path('search/', ProductDocumentView.as_view({'get': 'list'}), name='product-search'),
+    path('search/', search_products, name='api_search_products'),
 ]
