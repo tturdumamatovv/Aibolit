@@ -1,8 +1,18 @@
 from rest_framework import generics
 from rest_framework.response import Response
 
-from apps.pages.api.serializers import StaticPageSerializer, BannerSerializer, PartnerSerializer, DiscountInfoSerializer
-from apps.pages.models import StaticPage, Banner, Partner, DiscountInfo
+from apps.pages.api.serializers import (
+    StaticPageSerializer,
+    BannerSerializer,
+    PartnerSerializer,
+    DiscountInfoSerializer
+)
+from apps.pages.models import (
+    StaticPage,
+    Banner,
+    Partner,
+    DiscountInfo
+)
 
 
 class StaticPageDetailView(generics.RetrieveAPIView):

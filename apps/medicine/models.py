@@ -1,10 +1,9 @@
-from django.db import models
-from django.utils.translation import gettext_lazy as _
-
 from colorfield.fields import ColorField
+from django.db import models
+from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
 from unidecode import unidecode
-from django.utils.text import slugify
 
 from apps.authentication.models import User
 
@@ -42,7 +41,7 @@ class Category(MPTTModel):
 
 
 class Product(models.Model):
-    code = models.IntegerField(unique=True, verbose_name=_("Код"))
+    code = models.IntegerField(unique=True, verbose_name=_("Код"), blank=True, null=True)
     name = models.CharField(max_length=255, verbose_name=_("Название"))
     sklad = models.CharField(max_length=255, verbose_name=_("Склад"))
     ostatok = models.IntegerField(verbose_name=_("Остаток"))
@@ -85,7 +84,7 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images', verbose_name=_("Продукт"))
-    image = models.ImageField(upload_to='product_images', verbose_name=_("Картинка"))
+    image = models.ImageField(upload_to='product_images', verbose_name=_("Картинка"), max_length=1000)
     main = models.BooleanField(default=False, verbose_name=_("Основное изображение"))
 
     def __str__(self):

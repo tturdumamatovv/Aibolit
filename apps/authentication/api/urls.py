@@ -10,7 +10,7 @@ from apps.authentication.api.views import (
     UserDeleteAPIView,
     NotificationSettingsAPIView,
     UpdateUserRetireeStatusAPIView
-    )
+)
 
 urlpatterns = [
     path('login/', UserLoginView.as_view(), name='user_registration'),

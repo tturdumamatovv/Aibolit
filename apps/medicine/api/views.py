@@ -22,7 +22,7 @@ from .serializers import (
     FavoriteSerializer,
     RecentlyViewedSerializer
 )
-from ..documents import ProductDocument
+# from ..documents import ProductDocument
 
 
 class CustomPagination(PageNumberPagination):

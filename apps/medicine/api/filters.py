@@ -1,4 +1,5 @@
 from django_filters import rest_framework as filters
+
 from apps.medicine.models import Product, Purpose
 
 

@@ -1,7 +1,7 @@
-import logging
 import requests
 from celery import shared_task
 from django.db import transaction
+
 from apps.medicine.models import Product
 
 

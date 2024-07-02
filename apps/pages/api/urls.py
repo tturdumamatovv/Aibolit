@@ -1,6 +1,11 @@
 from django.urls import path
 
-from apps.pages.api.views import StaticPageDetailView, BannerListView, PartnerListView, DiscountInfoView
+from apps.pages.api.views import (
+    StaticPageDetailView,
+    BannerListView,
+    PartnerListView,
+    DiscountInfoView
+)
 
 urlpatterns = [
     path('banners/', BannerListView.as_view(), name='banner-list'),
