@@ -1,6 +1,6 @@
 from django.contrib import messages
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import render, get_object_or_404
 from django_filters import rest_framework as filters
 from rest_framework import generics, permissions, status
 from rest_framework.decorators import api_view
@@ -12,8 +12,9 @@ from apps.medicine.models import (
     Product,
     Category,
     Favorite,
-    RecentlyViewedProduct
+    RecentlyViewedProduct, ProductImage
 )
+from apps.medicine.forms import ProductImageForm
 from .filters import ProductFilter
 from .serializers import (
     ProductSerializer,
@@ -23,6 +24,7 @@ from .serializers import (
     RecentlyViewedSerializer
 )
 # from ..documents import ProductDocument
+from ..documents import ProductDocument
 
 
 class CustomPagination(PageNumberPagination):
@@ -132,3 +134,21 @@ def search_products(request):
     products = [hit.to_dict() for hit in search_results]
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
+
+
+def change_image_view(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == 'POST':
+        form = ProductImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Если основное изображение, то сначала сбросим флаг у всех остальных изображений продукта
+            if form.cleaned_data.get('main'):
+                ProductImage.objects.filter(product=product).update(main=False)
+
+            # Сохраняем новое изображение
+            new_image = form.save(commit=False)
+            new_image.product = product
+            new_image.save()
+
+            return JsonResponse({'status': 'success', 'image_url': new_image.image.url})
+    return JsonResponse({'status': 'error'})

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django_filters',
     'mptt',
     'colorfield',
+    'inline_actions',
     # Created
     'apps.authentication',
     'apps.medicine',
@@ -54,7 +55,6 @@ INSTALLED_APPS = [
     'apps.pages'
 
 ]
-
 ELASTICSEARCH_DSL = {
     'default': {
         'hosts': 'http://elasticsearch:9200',
@@ -204,7 +204,7 @@ SIMPLE_JWT = {
 
 DEFAULT_PROFILE_PICTURE_URL = MEDIA_URL + 'profile_pictures/default-user.jpg'
 
-UNSPLASH_ACCESS_KEY = config('UNSPLASH_ACCESS_KEY')
+# UNSPLASH_ACCESS_KEY = config('UNSPLASH_ACCESS_KEY')
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Aibolit OpenAPI",

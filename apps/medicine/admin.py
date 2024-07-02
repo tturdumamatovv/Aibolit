@@ -1,7 +1,8 @@
 from django.contrib import admin, messages
 from django.http import HttpResponseRedirect
-from django.utils.safestring import mark_safe
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
+from inline_actions.admin import InlineActionsModelAdminMixin
 from mptt.admin import DraggableMPTTAdmin
 
 from apps.medicine.forms import CategoryAdminForm
@@ -57,10 +58,10 @@ class ImageFormInline(admin.TabularInline):
 
 
 @admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(InlineActionsModelAdminMixin, admin.ModelAdmin):
     filter_horizontal = ('related_products', 'similar_products')
     list_display = ('name', 'ostatok', 'price', 'manufacturer',
-                    'country', 'category', 'is_product_of_the_day', 'display_image')
+                    'country', 'category', 'is_product_of_the_day', 'display_image', 'change_image_button')
     search_fields = ('name', 'manufacturer', 'country')
     list_filter = ('category',)
     ordering = ('id',)
@@ -76,18 +77,22 @@ class ProductAdmin(admin.ModelAdmin):
             return ('name', 'ostatok', 'price', 'manufacturer', 'country', 'category', 'is_product_of_the_day')
         else:
             # При просмотре списка товаров
-            return ('name', 'ostatok', 'price', 'manufacturer', 'country', 'category', 'is_product_of_the_day', 'display_image')
+            return (
+            'name', 'ostatok', 'price', 'manufacturer', 'country', 'category', 'is_product_of_the_day', 'display_image')
 
     def get_fieldsets(self, request, obj=None):
         if obj:
             # При просмотре деталей конкретного товара
             return [
-                (None, {'fields': ('name', 'ostatok', 'price', 'manufacturer', 'country', 'category', 'is_product_of_the_day')}),
+                (None, {'fields': (
+                'name', 'ostatok', 'price', 'manufacturer', 'country', 'category', 'is_product_of_the_day')}),
             ]
         else:
             # При просмотре списка товаров
             return [
-                (None, {'fields': ('name', 'ostatok', 'price', 'manufacturer', 'country', 'category', 'is_product_of_the_day', 'display_image')}),
+                (None, {'fields': (
+                'name', 'ostatok', 'price', 'manufacturer', 'country', 'category', 'is_product_of_the_day',
+                'display_image')}),
             ]
 
     readonly_fields = ['display_image']  # Указываем поле, которое будет только для чтения
@@ -104,7 +109,6 @@ class ProductAdmin(admin.ModelAdmin):
 
     display_image.short_description = 'Основное изображение'  # Название колонки в админке
 
-
     @admin.action(description='Загрузить товары из API')
     def load_products_action(modeladmin, request, queryset):
         load_products_from_api.delay()
@@ -118,6 +122,14 @@ class ProductAdmin(admin.ModelAdmin):
         return HttpResponseRedirect(
             f"/admin/change_category/?ids={','.join(selected)}&action=change&next={request.get_full_path()}"
         )
+
+    def change_image_button(self, obj):
+        return format_html(f'<input type="file" data-id="{obj.pk}" id="upload-img-{obj.pk}" class="upload-img" name="upload-img" />', obj.pk)
+
+    change_image_button.short_description = 'Изменить изображение'
+
+    class Media:
+        js = ('admin/js/change_image.js',)
 
 
 @admin.register(Category)

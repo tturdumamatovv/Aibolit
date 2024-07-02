@@ -3,10 +3,11 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from apps.medicine.api.views import admin_change_category
+from apps.medicine.api.views import admin_change_category, change_image_view
 
 urlpatterns = [
     path("admin/change_category/", admin_change_category, name="admin_change_category"),
+    path('admin/change-image/<int:pk>/', change_image_view, name='change_image'),
     path('admin/', admin.site.urls),
     path('api/v1/', include('apps.authentication.api.urls')),
     path('api/v1/', include('apps.medicine.api.urls')),
