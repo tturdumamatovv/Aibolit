@@ -1,5 +1,7 @@
 import random
 
+from decimal import Decimal
+
 from django.conf import settings
 from django.db import models, transaction
 from django.utils.translation import gettext_lazy as _
@@ -102,7 +104,7 @@ class Order(models.Model):
                 self.user.save()
 
     def assign_bonus_points(self):
-        total_price = sum(item.product.price * item.quantity for item in self.items.all())
+        total_price = sum(item.product.price * Decimal(item.quantity) for item in self.items.all())
         bonus_configurations = BonusConfiguration.objects.filter(min_order_amount__lte=total_price).order_by('-min_order_amount')
 
         if bonus_configurations.exists():
@@ -130,7 +132,7 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE, verbose_name=_("Заказ"))
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name=_("Продукт"))
-    quantity = models.PositiveIntegerField(default=1, verbose_name=_("Количество"))
+    quantity = models.FloatField(verbose_name=_("Количество"))
 
     class Meta:
         verbose_name = _("Элемент заказа")

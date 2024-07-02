@@ -2,6 +2,8 @@ from django.utils import timezone
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
+from decimal import Decimal
+
 from apps.authentication.models import UserAddress
 from apps.medicine.models import Product
 from apps.order.models import Order, OrderItem, BonusConfiguration, DeliveryConfiguration
@@ -58,13 +60,13 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(serializers.DecimalField(max_digits=10, decimal_places=2))
     def get_total_price(self, obj):
-        total = 0
+        total = Decimal('0.00')
         for item in obj.items.all():
             product = item.product
             if product.discounted_price:
-                total += product.discounted_price * item.quantity
+                total += product.discounted_price * Decimal(item.quantity)
             else:
-                total += product.price * item.quantity
+                total += product.price * Decimal(item.quantity)
         return total
 
     @extend_schema_field(serializers.DecimalField(max_digits=10, decimal_places=2))
@@ -76,7 +78,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(serializers.IntegerField())
     def get_bonus_points_earned(self, obj):
-        total_price = sum(item.product.price * item.quantity for item in obj.items.all())
+        total_price = sum(item.product.price * Decimal(item.quantity) for item in obj.items.all())
         bonus_configurations = BonusConfiguration.objects.filter(min_order_amount__lte=total_price).order_by('-min_order_amount')
 
         if bonus_configurations.exists():
@@ -92,9 +94,9 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             delivery_configuration = delivery_configurations.first()
             free_shipping_threshold = delivery_configuration.free_shipping_threshold
             if free_shipping_threshold and total_price >= free_shipping_threshold:
-                return 0  # доставка бесплатна
+                return Decimal('0.00')  # доставка бесплатна
             return delivery_configuration.delivery_cost
-        return 0
+        return Decimal('0.00')
 
     @extend_schema_field(serializers.DecimalField(max_digits=10, decimal_places=2))
     def get_total_to_pay(self, obj):

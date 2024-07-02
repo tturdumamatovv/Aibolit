@@ -59,7 +59,7 @@ class ImageFormInline(admin.TabularInline):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     filter_horizontal = ('related_products', 'similar_products')
-    list_display = ('name', 'ostatok', 'price', 'manufacturer',
+    list_display = ('id', 'name', 'ostatok', 'price', 'manufacturer',
                     'country', 'category', 'is_product_of_the_day', 'display_image')
     search_fields = ('name', 'manufacturer', 'country')
     list_filter = ('category',)
@@ -107,7 +107,7 @@ class ProductAdmin(admin.ModelAdmin):
 
     @admin.action(description='Загрузить товары из API')
     def load_products_action(modeladmin, request, queryset):
-        load_products_from_api.delay()
+        load_products_from_api()
         modeladmin.message_user(request, "Задача на загрузку товаров была успешно поставлена в очередь.",
                                 messages.SUCCESS)
         return HttpResponseRedirect(request.get_full_path())

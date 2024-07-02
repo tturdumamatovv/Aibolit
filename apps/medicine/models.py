@@ -44,7 +44,7 @@ class Product(models.Model):
     code = models.IntegerField(unique=True, verbose_name=_("Код"), blank=True, null=True)
     name = models.CharField(max_length=255, verbose_name=_("Название"))
     sklad = models.CharField(max_length=255, verbose_name=_("Склад"))
-    ostatok = models.IntegerField(verbose_name=_("Остаток"))
+    ostatok = models.FloatField(verbose_name=_("Остаток"))
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("Цена"))
     manufacturer = models.CharField(max_length=255, blank=True, null=True, verbose_name=_("Производитель"))
     country = models.CharField(max_length=255, blank=True, null=True, verbose_name=_("Страна производства"))

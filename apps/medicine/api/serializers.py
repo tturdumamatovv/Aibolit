@@ -2,6 +2,8 @@ from django.conf import settings
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
+from decimal import Decimal
+
 from apps.medicine.models import Product, Category, ProductImage, Favorite, RecentlyViewedProduct
 
 
@@ -72,12 +74,11 @@ class ProductSerializer(serializers.ModelSerializer):
 
         representation.pop('images', None)
 
-        if hasattr(instance, 'discounted_price'):
-            if instance.discounted_price is None:
-                representation.pop('discounted_price', None)
-        if hasattr(instance, 'discount_percent'):
-            if instance.discount_percent is None or instance.discount_percent == 0.00:
-                representation.pop('discount_percent', None)
+
+        if 'price' in representation:
+            representation['price'] = Decimal(representation['price'])
+        if 'discount_percent' in representation:
+            representation['discount_percent'] = Decimal(representation['discount_percent'])
 
         return representation
 
@@ -90,7 +91,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'description', 'discount_percent', 'discounted_price', 'price',
+        fields = ('id', 'name', 'description', 'discount_percent', 'discounted_price', 'price', 'ostatok',
                   'storage_rules', 'manufacturer', 'country', 'expiration_date', 'dosage',
                   'category', 'dosage_form', 'packaging', 'composition', 'contraindications',
                   'indications', 'side_effects', 'images', 'related_products', 'similar_products')
@@ -111,13 +112,12 @@ class ProductDetailSerializer(serializers.ModelSerializer):
             for img in instance.images.all()
         ]
 
-        # Only include discounted_price if it exists
-        if instance.discounted_price is None:
-            representation.pop('discounted_price', None)
 
-        # Only include discount_percent if it exists and not "0.00"
-        if instance.discount_percent is None or instance.discount_percent == 0.00:
-            representation.pop('discount_percent', None)
+        if 'price' in representation:
+            representation['price'] = Decimal(representation['price'])
+        # Only include discounted_price if it exists
+        if 'discount_percent' in representation:
+            representation['discount_percent'] = Decimal(representation['discount_percent'])
 
         return representation
 
