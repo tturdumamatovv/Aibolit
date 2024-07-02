@@ -1,8 +1,6 @@
 from django.conf import settings
-
-from rest_framework import serializers
-
 from drf_spectacular.utils import extend_schema_field
+from rest_framework import serializers
 
 from apps.medicine.models import Product, Category, ProductImage, Favorite, RecentlyViewedProduct
 
@@ -36,38 +34,6 @@ class CategorySerializer(serializers.ModelSerializer):
                 'slug': obj.parent.slug
             }
         return None
-
-
-# class CategoryBySlugSerializer(CategorySerializer):
-#     products = serializers.SerializerMethodField()
-#     colors = serializers.SerializerMethodField()
-#     brands = serializers.SerializerMethodField()
-#     sizes = serializers.SerializerMethodField()
-#     ratings = serializers.SerializerMethodField()
-#     min_price = serializers.SerializerMethodField()
-#     max_price = serializers.SerializerMethodField()
-#
-#     class Meta(CategorySerializer.Meta):
-#         fields = CategorySerializer.Meta.fields + ['products', 'ratings', 'min_price', 'max_price',
-#                                                    'brands', 'colors', 'sizes']
-#
-#     def get_products(self, obj):
-#         def get_all_products(category):
-#             products = list(category.products.filter(variants__isnull=False).distinct())
-#             for child in category.children.all():
-#                 products.extend(get_all_products(child))
-#             return products
-#
-#         products = get_all_products(obj)
-#         products_with_images = [product for product in products if Image.objects.filter(product=product).exists()]
-#         product_data = []
-#
-#         for product in products_with_images:
-#             rating = product.get_popularity_score()  # Получаем рейтинг продукта
-#             product_serializer = ProductSerializer(product, context=self.context)
-#             product_data.append({**product_serializer.data, 'popularity_score': rating})
-#
-#         return product_data
 
 
 class ProductImageSerializer(serializers.ModelSerializer):

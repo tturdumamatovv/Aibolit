@@ -1,16 +1,15 @@
+from django.contrib.auth.models import User
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from django.contrib.auth.models import User
-
-from firebase_admin import auth as firebase_auth
-import firebase_admin
-from firebase_admin import credentials
-
 from apps.authentication.models import (
     User,
     UserAddress
+)
+from apps.authentication.utils import (
+    send_sms,
+    generate_confirmation_code,
 )
 from .serializers import (
     CustomUserSerializer,
@@ -20,10 +19,6 @@ from .serializers import (
     UserAddressUpdateSerializer,
     NotificationSerializer,
     UserRetireeSerializer
-)
-from apps.authentication.utils import (
-    send_sms,
-    generate_confirmation_code,
 )
 
 

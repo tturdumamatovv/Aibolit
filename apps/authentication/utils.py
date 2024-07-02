@@ -1,12 +1,10 @@
-import requests
-import uuid
 import random
-
-from django.conf import settings
-from asgiref.sync import sync_to_async
-
+import uuid
 from xml.etree import ElementTree as ET
+
+import requests
 from decouple import config
+from django.conf import settings
 
 
 # TELEGRAM_BOT_TOKEN = '7441310771:AAHicm83gxd6F5E9hpIXjwNQ7551ZeA6PnU'

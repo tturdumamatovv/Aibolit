@@ -1,8 +1,8 @@
 import random
 
+from django.conf import settings
 from django.db import models, transaction
 from django.utils.translation import gettext_lazy as _
-from django.conf import settings
 
 from apps.authentication.models import UserAddress
 from apps.medicine.models import Product

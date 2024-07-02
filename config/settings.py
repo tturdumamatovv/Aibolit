@@ -204,6 +204,8 @@ SIMPLE_JWT = {
 
 DEFAULT_PROFILE_PICTURE_URL = MEDIA_URL + 'profile_pictures/default-user.jpg'
 
+UNSPLASH_ACCESS_KEY = config('UNSPLASH_ACCESS_KEY')
+
 SPECTACULAR_SETTINGS = {
     "TITLE": "Aibolit OpenAPI",
     "DESCRIPTION": "Описание нашего API в разработке...",

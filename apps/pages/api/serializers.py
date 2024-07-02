@@ -1,6 +1,5 @@
-from rest_framework import serializers
-
 from drf_spectacular.utils import extend_schema_field
+from rest_framework import serializers
 
 from apps.medicine.api.serializers import ProductSerializer
 from apps.medicine.models import Product
